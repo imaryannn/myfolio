@@ -87,19 +87,7 @@
             });
         }
         
-        // --- Image Parallax inside Projects ---
-        gsap.utils.toArray('.project-media .parallax-img').forEach(img => {
-            gsap.to(img, {
-                yPercent: 15,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: img.parentElement,
-                    start: 'top bottom',
-                    end: 'bottom top',
-                    scrub: true
-                }
-            });
-        });
+        // --- Image Parallax inside Projects (Removed for pure CSS layout)
 
         // --- Skill Bars Animate ---
         gsap.utils.toArray('.bar::after').forEach(bar => {
@@ -119,14 +107,14 @@
         // Manually inject style to run animation on entering
         const style = document.createElement('style');
         style.textContent = `
-            .skill-group.animate-bars .bar::after {
+            .skill-group.animate-bars .bar-fill {
                 animation: fillBar 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
             @keyframes fillBar {
                 from { clip-path: inset(0 100% 0 0); }
                 to { clip-path: inset(0 0 0 0); }
             }
-            .skill-list li span.bar::after {
+            .bar-fill {
                 clip-path: inset(0 100% 0 0); /* Start hidden */
             }
         `;
@@ -140,25 +128,193 @@
     });
 
     // ============================
-    // FORM SUBMISSION (Terminal aesthetic)
+    // HERO TERMINAL — TYPEWRITER
     // ============================
-    const form = document.querySelector('.terminal-form');
-    if (form) {
-        form.addEventListener('submit', (e) => {
+    const heroForm = document.getElementById('hero-terminal-form');
+    const heroInput = document.getElementById('hero-term-input');
+    const heroBody = document.getElementById('hero-terminal-body');
+
+    const bootLines = [
+        { text: 'ARYAN_CORE.EXE [Version 1.0.0]', color: '', delay: 0 },
+        { text: '(c) Aryan Corp. All rights reserved.', color: 'var(--text-muted)', delay: 600 },
+        { text: '', color: '', delay: 900 },
+        { text: '> Booting developer profile...', color: 'var(--accent-cyan)', delay: 1200 },
+        { text: '> Name:     Aryan', color: '', delay: 2000 },
+        { text: '> Role:     Full Stack Developer', color: '', delay: 2700 },
+        { text: '> Skills:   Node · Express · Socket.io · MongoDB', color: '', delay: 3500 },
+        { text: '> Frontend: HTML · CSS · JavaScript (ES6+)', color: '', delay: 4300 },
+        { text: '> Deployed: ZyroMeet · NodeChat · Prioramail · Syncyt', color: '', delay: 5100 },
+        { text: '', color: '', delay: 5900 },
+        { text: '> Status:   ONLINE & READY TO BUILD 🚀', color: '#27c93f', delay: 6300 },
+        { text: '', color: '', delay: 7000 },
+        { text: 'Type "help" to interact...', color: 'var(--text-muted)', delay: 7500 },
+    ];
+
+    function typeLine(lineEl, text, speed = 30, cb) {
+        let i = 0;
+        lineEl.textContent = '';
+        const interval = setInterval(() => {
+            lineEl.textContent += text[i];
+            i++;
+            heroBody.scrollTop = heroBody.scrollHeight;
+            if (i >= text.length) {
+                clearInterval(interval);
+                if (cb) cb();
+            }
+        }, speed);
+    }
+
+    function runBoot() {
+        let queue = [...bootLines];
+
+        function next() {
+            if (!queue.length) {
+                // Reveal interactive input
+                heroForm.style.display = 'flex';
+                heroInput.focus();
+                return;
+            }
+            const line = queue.shift();
+            setTimeout(() => {
+                const span = document.createElement('span');
+                span.className = 'term-line';
+                if (line.color) span.style.color = line.color;
+                heroForm.before(span);
+
+                if (line.text === '') {
+                    span.innerHTML = '&nbsp;';
+                    next();
+                } else {
+                    typeLine(span, line.text, 25, next);
+                }
+            }, queue.length === bootLines.length - 1 ? line.delay : 0);
+        }
+
+        // Sequential with delays between lines
+        bootLines.forEach((line, idx) => {
+            setTimeout(() => {
+                const span = document.createElement('span');
+                span.className = 'term-line';
+                if (line.color) span.style.color = line.color;
+                heroForm.before(span);
+
+                if (line.text === '') {
+                    span.innerHTML = '&nbsp;';
+                } else {
+                    typeLine(span, line.text, 22);
+                }
+                heroBody.scrollTop = heroBody.scrollHeight;
+
+                if (idx === bootLines.length - 1) {
+                    setTimeout(() => {
+                        heroForm.style.display = 'flex';
+                        heroInput.focus();
+                    }, 1500);
+                }
+            }, line.delay);
+        });
+    }
+
+    if (heroBody) {
+        setTimeout(runBoot, 600);
+    }
+
+    if (heroForm) {
+        heroBody.addEventListener('click', () => heroInput.focus());
+
+        heroForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const btn = form.querySelector('button');
+            const val = heroInput.value.trim().toLowerCase();
+            if (!val) return;
+
+            const echo = document.createElement('span');
+            echo.className = 'term-line';
+            echo.style.color = 'var(--accent-copper)';
+            echo.textContent = 'C:\\Users\\Aryan> ' + val;
+            heroForm.before(echo);
+
+            const response = document.createElement('span');
+            response.className = 'term-line';
+            response.style.color = 'var(--accent-cyan)';
+
+            switch(val) {
+                case 'help':
+                    response.textContent = 'commands: help, about, skills, projects, clear, whoami, sudo';
+                    break;
+                case 'about':
+                case 'whoami':
+                    response.textContent = 'Aryan — Full Stack Dev. Builder of real-time systems and clean interfaces.';
+                    break;
+                case 'skills':
+                    response.textContent = 'JS · HTML · CSS · Node · Express · Socket.io · MongoDB · REST · Git';
+                    break;
+                case 'projects':
+                    response.textContent = 'Scrolling to Deployed Assets...';
+                    setTimeout(() => document.getElementById('projects').scrollIntoView({behavior: 'smooth'}), 500);
+                    break;
+                case 'clear':
+                    Array.from(heroBody.querySelectorAll('.term-line')).forEach(el => el.remove());
+                    heroInput.value = '';
+                    return;
+                case 'sudo':
+                    response.textContent = 'Access denied. Nice try.';
+                    response.style.color = 'var(--accent-red)';
+                    break;
+                default:
+                    response.textContent = `'${val}' is not recognized. Type 'help'.`;
+                    response.style.color = 'var(--text-muted)';
+            }
+
+            heroForm.before(response);
+            heroInput.value = '';
+            heroBody.scrollTop = heroBody.scrollHeight;
+        });
+    }
+
+    // ============================
+    // FORM SUBMISSION — Web3Forms
+    // ============================
+    const form = document.getElementById('contact-form');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"]');
             const status = form.querySelector('.form-status');
-            
-            btn.innerHTML = 'Sending... [██████    ] 50%';
+
+            btn.innerHTML = 'Transmitting... [████████  ] 80%';
             btn.style.pointerEvents = 'none';
 
-            setTimeout(() => {
+            const data = new FormData(form);
+
+            try {
+                const res = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    body: data
+                });
+                const json = await res.json();
+
+                if (json.success) {
+                    btn.innerHTML = 'Transmit Buffer';
+                    btn.style.pointerEvents = 'auto';
+                    status.textContent = '✓ Payload delivered. I\'ll be in touch.';
+                    status.style.color = '#27c93f';
+                    status.classList.add('active');
+                    form.reset();
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (err) {
                 btn.innerHTML = 'Transmit Buffer';
                 btn.style.pointerEvents = 'auto';
+                status.textContent = '✗ Transmission failed. Try again.';
+                status.style.color = 'var(--accent-red)';
                 status.classList.add('active');
-                form.reset();
-                setTimeout(() => status.classList.remove('active'), 3000);
-            }, 1000);
+            }
+
+            setTimeout(() => {
+                status.classList.remove('active');
+                status.style.color = '';
+            }, 4000);
         });
     }
 

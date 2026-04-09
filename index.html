@@ -35,16 +35,32 @@
 
 
         <div class="container hero-content">
-            <div data-reveal="fade-up">
-                <div class="hero-intro">HELLO, I'M</div>
-                <h1 class="hero-title">ARYAN</h1>
+            <div class="hero-left">
+                <div data-reveal="fade-up">
+                    <div class="hero-intro">HELLO, I'M</div>
+                    <h1 class="hero-title">ARYAN</h1>
+                </div>
+                <div data-reveal="fade-up" data-delay="0.2">
+                    <span class="hero-subtitle">// Full Stack Developer</span>
+                </div>
+                <div data-reveal="fade-up" data-delay="0.4">
+                    <p class="hero-desc">Architecting robust, high-performance systems and immersive interactive experiences at the frontier of the web.</p>
+                    <a href="#projects" class="btn btn-primary">Initialize Sequence</a>
+                </div>
             </div>
-            <div data-reveal="fade-up" data-delay="0.2">
-                <span class="hero-subtitle">// Full Stack Developer</span>
-            </div>
-            <div data-reveal="fade-up" data-delay="0.4">
-                <p class="hero-desc">Architecting robust, high-performance systems and immersive interactive experiences at the frontier of the web.</p>
-                <a href="#projects" class="btn btn-primary">Initialize Sequence</a>
+            
+            <div class="hero-right" data-reveal="fade-left" data-delay="0.6">
+                <div class="terminal-wire">
+                    <div class="terminal-header">
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span> ARYAN_CORE.EXE
+                    </div>
+                    <div class="terminal-body" id="hero-terminal-body">
+                        <form id="hero-terminal-form" class="term-input-line" style="display:none;">
+                            <span>C:\Users\Aryan&gt;</span>
+                            <input type="text" id="hero-term-input" autocomplete="off" spellcheck="false">
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -58,8 +74,8 @@
             <div class="about-grid">
                 <div class="tech-panel" data-reveal="fade-right">
                     <div class="about-text">
-                        <p><strong>MISSION //</strong> Construct scalable, distributed, and flawlessly designed client and server architectures.</p>
-                        <p>I specialize in translating complex logic into seamless digital products. My core focus lies in performance optimization, interactive front-end mechanics, and resilient backend data pipelines.</p>
+                        <p><strong>MISSION //</strong> Build scalable, distributed, and production-grade client-server systems that actually work under pressure.</p>
+                        <p>I write real code — Node.js backends, REST APIs, WebSocket servers, MongoDB pipelines, and front-end UIs that are fast and functional. I don't just make things look good — I make them work.</p>
                         <a href="#contact" class="btn-link mt-8">Connect Securely -></a>
                     </div>
                 </div>
@@ -83,16 +99,24 @@
                     <div class="project-content">
                         <span class="project-category">Protocol: Comms</span>
                         <h3 class="project-name">ZyroMeet</h3>
-                        <p class="project-snippet">Real-time low-latency video and audio meeting infrastructure designed for immediate deployment and robust P2P networking.</p>
+                        <p class="project-snippet">Built a browser-based video calling app using WebRTC for peer-to-peer media streams and WebSockets for signaling. Handles real-time connection negotiation and low-latency A/V transport.</p>
                         <div class="project-tech">
                             <span>WebRTC</span>
-                            <span>Socket.io</span>
-                            <span>Node Environment</span>
+                            <span>WebSocket</span>
+                            <span>React</span>
                         </div>
-                        <a href="#" class="btn btn-outline">Access Module</a>
+                        <a href="https://zyromeet.onrender.com/" target="_blank" class="btn btn-outline">Access Module</a>
                     </div>
                     <div class="project-media">
-                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" class="parallax-img" alt="ZyroMeet Architecture">
+                        <div class="terminal-wire">
+                            <div class="terminal-header"><span class="dot"></span><span class="dot"></span><span class="dot"></span> ZYROMEET.SYS</div>
+                            <div class="terminal-body">
+                                <span class="term-line">> initializing WebRTC handshake...</span>
+                                <span class="term-line">> connection established: [PEER_A0Z]</span>
+                                <span class="term-line">> latency: 12ms</span>
+                                <div class="term-loader"></div>
+                            </div>
+                        </div>
                     </div>
                 </article>
 
@@ -101,17 +125,24 @@
                     <div class="project-content">
                         <span class="project-category">Protocol: P2P Chat</span>
                         <h3 class="project-name">NodeChat</h3>
-                        <p class="project-snippet">Encrypted, socket-driven instant messaging client featuring dynamic state syncing, read receipts, and minimal latency packet transfer.</p>
+                        <p class="project-snippet">Real-time chat app built on Node.js and Socket.io. Handles bidirectional WebSocket connections, room-based messaging, and live user presence — all running on a persistent Express server.</p>
                         <div class="project-tech">
                             <span>Express.js</span>
                             <span>MongoDB Streams</span>
                             <span>WSS</span>
                         </div>
-                        <a href="#" class="btn btn-outline">Access Module</a>
+                        <a href="https://nodechat-aivw.onrender.com/" target="_blank" class="btn btn-outline">Access Module</a>
                     </div>
                     <div class="project-media">
-                        <!-- High-quality Unsplash image for NodeChat -->
-                        <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=1200&q=80" class="parallax-img" alt="NodeChat Infrastructure">
+                        <div class="terminal-wire">
+                            <div class="terminal-header"><span class="dot"></span><span class="dot"></span><span class="dot"></span> NODECHAT.EXE</div>
+                            <div class="terminal-body">
+                                <span class="term-line">[USER_01]: SYN</span>
+                                <span class="term-line">[SERVER]: ACK</span>
+                                <span class="term-line">[USER_01]: connected to wss://chat</span>
+                                <span class="term-line">[USER_02]: socket.write('hello')<span class="term-blink">_</span></span>
+                            </div>
+                        </div>
                     </div>
                 </article>
 
@@ -126,10 +157,73 @@
                             <span>Binary Streams</span>
                             <span>PDF.js API</span>
                         </div>
-                        <a href="#" class="btn btn-outline">Access Module</a>
+                        <a href="https://imaryannn.github.io/wpdf/" target="_blank" class="btn btn-outline">Access Module</a>
                     </div>
                     <div class="project-media">
-                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80" class="parallax-img" alt="WPDF System">
+                        <div class="terminal-wire">
+                            <div class="terminal-header"><span class="dot"></span><span class="dot"></span><span class="dot"></span> WPDF_WORKER.BIN</div>
+                            <div class="terminal-body">
+                                <span class="term-line">> loading bin/document.pdf</span>
+                                <span class="term-line">> parsing byte streams: 100%</span>
+                                <span class="term-line">> compressing via worker-01...</span>
+                                <span class="term-line" style="color:var(--accent-cyan);">> output: 2.1MB (saved 45%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 4: Prioramail -->
+                <article class="project-row" data-reveal="fade-up">
+                    <div class="project-content">
+                        <span class="project-category">Protocol: App</span>
+                        <h3 class="project-name">Prioramail</h3>
+                        <p class="project-snippet">Minimal email platform with secure authentication and full email management capabilities.</p>
+                        <div class="project-tech">
+                            <span>HTML/JS</span>
+                            <span>Express</span>
+                            <span>MongoDB</span>
+                            <span>OAuth/JWT</span>
+                            <span>Gmail API</span>
+                        </div>
+                        <a href="https://prioramail.vercel.app/" target="_blank" class="btn btn-outline">Access Module</a>
+                    </div>
+                    <div class="project-media">
+                        <div class="terminal-wire">
+                            <div class="terminal-header"><span class="dot"></span><span class="dot"></span><span class="dot"></span> PRIORA_MAIL.SYS</div>
+                            <div class="terminal-body">
+                                <span class="term-line">> auth.google.verifyToken()</span>
+                                <span class="term-line">> JWT established successfully</span>
+                                <span class="term-line">> fetching inbox via Gmail API...</span>
+                                <span class="term-line" style="color:var(--accent-cyan);">> 12 new messages loaded</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 5: Syncyt -->
+                <article class="project-row" data-reveal="fade-up">
+                    <div class="project-content">
+                        <span class="project-category">Protocol: Interactive</span>
+                        <h3 class="project-name">Syncyt</h3>
+                        <p class="project-snippet">Real-time interactive platform with synchronized media and live communication features.</p>
+                        <div class="project-tech">
+                            <span>Socket.io</span>
+                            <span>Express</span>
+                            <span>Node.js</span>
+                            <span>YouTube API</span>
+                        </div>
+                        <a href="https://syncyt.onrender.com/" target="_blank" class="btn btn-outline">Access Module</a>
+                    </div>
+                    <div class="project-media">
+                        <div class="terminal-wire">
+                            <div class="terminal-header"><span class="dot"></span><span class="dot"></span><span class="dot"></span> SYNCYT-WSS.BIN</div>
+                            <div class="terminal-body">
+                                <span class="term-line">> wss://syncyt starting...</span>
+                                <span class="term-line">> client[09] joined room 'media_1'</span>
+                                <span class="term-line">> broadcast(player.seekTo(124))</span>
+                                <span class="term-line" style="color:#27c93f;">> playback perfectly synced</span>
+                            </div>
+                        </div>
                     </div>
                 </article>
 
@@ -145,29 +239,29 @@
             
             <div class="skills-wrapper">
                 <div class="skill-group" data-reveal="fade-up">
-                    <h3 class="skill-title">Core Languages</h3>
+                    <h3 class="skill-title">Frontend Logic</h3>
                     <ul class="skill-list">
-                        <li>TypeScript <span class="bar" style="width:90%"></span></li>
-                        <li>Python <span class="bar" style="width:85%"></span></li>
-                        <li>C++ / Systems <span class="bar" style="width:60%"></span></li>
+                        <li><span>JavaScript (ES6+)</span> <div class="bar-bg"><div class="bar-fill" style="width: 95%;"></div></div></li>
+                        <li><span>HTML5</span> <div class="bar-bg"><div class="bar-fill" style="width: 95%;"></div></div></li>
+                        <li><span>CSS3</span> <div class="bar-bg"><div class="bar-fill" style="width: 90%;"></div></div></li>
                     </ul>
                 </div>
                 
                 <div class="skill-group" data-reveal="fade-up" data-delay="0.2">
-                    <h3 class="skill-title">Infrastructure</h3>
+                    <h3 class="skill-title">Backend & Network</h3>
                     <ul class="skill-list">
-                        <li>Docker/Containers <span class="bar" style="width:80%"></span></li>
-                        <li>AWS Services <span class="bar" style="width:75%"></span></li>
-                        <li>Web Sockets <span class="bar" style="width:95%"></span></li>
+                        <li><span>Node.js</span> <div class="bar-bg"><div class="bar-fill" style="width: 85%;"></div></div></li>
+                        <li><span>Express.js</span> <div class="bar-bg"><div class="bar-fill" style="width: 90%;"></div></div></li>
+                        <li><span>Socket.io / WSS</span> <div class="bar-bg"><div class="bar-fill" style="width: 85%;"></div></div></li>
                     </ul>
                 </div>
 
                 <div class="skill-group" data-reveal="fade-up" data-delay="0.4">
-                    <h3 class="skill-title">Frameworks</h3>
+                    <h3 class="skill-title">Data & Systems</h3>
                     <ul class="skill-list">
-                        <li>React / Next <span class="bar" style="width:90%"></span></li>
-                        <li>GSAP / 3D <span class="bar" style="width:75%"></span></li>
-                        <li>Node Environment <span class="bar" style="width:95%"></span></li>
+                        <li><span>MongoDB</span> <div class="bar-bg"><div class="bar-fill" style="width: 80%;"></div></div></li>
+                        <li><span>REST APIs</span> <div class="bar-bg"><div class="bar-fill" style="width: 90%;"></div></div></li>
+                        <li><span>Git & Auth</span> <div class="bar-bg"><div class="bar-fill" style="width: 85%;"></div></div></li>
                     </ul>
                 </div>
             </div>
@@ -182,17 +276,21 @@
                 <h2 class="section-heading" style="margin-bottom:2rem;">Establish Connection</h2>
                 
                 <form id="contact-form" class="terminal-form">
+                    <input type="hidden" name="access_key" value="20b341cc-bebf-48dd-9167-4d4116a4e84e">
+                    <input type="hidden" name="subject" value="New message from Portfolio">
+                    <input type="hidden" name="from_name" value="Aryan Portfolio">
+                    <input type="checkbox" name="botcheck" style="display:none;">
                     <div class="input-block">
                         <label>Sys.User_ID:</label>
-                        <input type="text" placeholder="// Enter Designator" required>
+                        <input type="text" name="name" placeholder="// Enter Designator" required>
                     </div>
                     <div class="input-block">
                         <label>Sys.Secure_Link:</label>
-                        <input type="email" placeholder="// Enter Valid Email" required>
+                        <input type="email" name="email" placeholder="// Enter Valid Email" required>
                     </div>
                     <div class="input-block">
                         <label>Packet.Payload:</label>
-                        <textarea rows="4" placeholder="// Enter Transmission Data" required></textarea>
+                        <textarea name="message" rows="4" placeholder="// Enter Transmission Data" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary" style="align-self: flex-start; margin-top:1rem;">Transmit Buffer</button>
                     <div class="form-status">Payload Accepted and Distributed.</div>
@@ -206,8 +304,8 @@
         <div class="container footer-inner">
             <div class="footer-brand">ARYAN_CORE // V_1.0.0</div>
             <div class="footer-links">
-                <a href="#">[ Github ]</a>
-                <a href="#">[ Network ]</a>
+                <a href="https://github.com/imaryannn" target="_blank">[ Github ]</a>
+                <a href="https://www.linkedin.com/in/aryan-2064153a0/" target="_blank">[ LinkedIn ]</a>
             </div>
             <div>STATUS: ONLINE</div>
         </div>
