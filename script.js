@@ -32,17 +32,14 @@
     function initAnimations() {
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
             document.querySelectorAll('[data-reveal]').forEach(el => {
-                el.style.opacity = 1;
-                el.style.transform = 'translateY(0)';
+                el.style.opacity = '1';
+                el.style.transform = 'none';
             });
             return;
         }
 
         gsap.registerPlugin(ScrollTrigger);
 
-        // --- Deep HERO Parallax Parallax ---
-        const heroBg = document.querySelector('.hero-bg-container');
-        
         // Grid texture scales and shifts slowly (Removed since bg is removed)
 
         // Floating Rock (Removed)
@@ -53,41 +50,114 @@
         reveals.forEach(el => {
             const direction = el.getAttribute('data-reveal');
             const delay = parseFloat(el.getAttribute('data-delay')) || 0;
-            
-            let options = {
-                opacity: 1,
-                y: 0,
-                x: 0,
-                duration: 1,
-                delay: delay,
+
+            const toVars = {
+                opacity: 1, y: 0, x: 0,
+                duration: 1, delay,
                 ease: 'power3.out',
                 scrollTrigger: {
                     trigger: el,
-                    start: 'top 85%',
+                    start: 'top 90%',
                     toggleActions: 'play none none none'
                 }
             };
-
-            gsap.to(el, options);
+            if (direction === 'fade-up') el.style.transform = 'translateY(60px)';
+            if (direction === 'fade-right') el.style.transform = 'translateX(-60px)';
+            if (direction === 'fade-left') el.style.transform = 'translateX(60px)';
+            el.style.opacity = '0';
+            gsap.to(el, toVars);
         });
 
-        // --- Wireframe Cube Scroll Spin ---
-        const cube = document.querySelector('.wireframe-cube');
-        if (cube) {
-            gsap.to(cube, {
-                rotationY: 180,
-                rotationZ: 180,
+        // ================================
+        // PARALLAX LAYERS
+        // ================================
+
+        // Section headings drift up slower than scroll
+        gsap.utils.toArray('.section-heading').forEach(el => {
+            gsap.to(el, {
+                yPercent: -15,
                 ease: 'none',
                 scrollTrigger: {
-                    trigger: '.about',
+                    trigger: el.closest('section'),
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1.5
+                }
+            });
+        });
+
+        // Section labels drift up slightly faster
+        gsap.utils.toArray('.section-label').forEach(el => {
+            gsap.to(el, {
+                yPercent: -25,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: el.closest('section'),
                     start: 'top bottom',
                     end: 'bottom top',
                     scrub: 1
                 }
             });
+        });
+
+        // About wireframe cube spins + drifts
+        const cube = document.querySelector('.wireframe-cube');
+        if (cube) {
+            gsap.to(cube, {
+                rotationY: 360,
+                rotationZ: 90,
+                yPercent: -30,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.about',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1.5
+                }
+            });
         }
-        
-        // --- Image Parallax inside Projects (Removed for pure CSS layout)
+
+        // Project rows nudge upward at staggered depths
+        gsap.utils.toArray('.project-row').forEach((row, i) => {
+            gsap.to(row, {
+                yPercent: -8 * (i % 2 === 0 ? 1 : 1.5),
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: row,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
+        });
+
+        // Terminal wires in projects — no parallax (static)
+
+        // Skill groups float upward
+        gsap.utils.toArray('.skill-group').forEach((el, i) => {
+            gsap.to(el, {
+                yPercent: -10 - i * 3,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.skills',
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
+        });
+
+        // Contact box drifts up
+        gsap.to('.contact-box', {
+            yPercent: -10,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.contact',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1
+            }
+        });
 
         // --- Skill Bars Animate ---
         gsap.utils.toArray('.bar::after').forEach(bar => {
