@@ -95,12 +95,7 @@
             duration: 1.2, 
             ease: 'power2.out',
             stagger: 0.2
-        }, '-=0.8')
-        .from('.scroll-indicator', {
-            opacity: 0,
-            duration: 1,
-            ease: 'power2.out'
-        }, '-=0.5');
+        }, '-=0.8');
 
         // --- Hero Subtle Parallax Shapes ---
         gsap.utils.toArray('.shape').forEach(shape => {
@@ -148,6 +143,20 @@
                 }
             });
         }
+        
+        // --- Image Parallax ---
+        gsap.utils.toArray('.parallax-img').forEach(img => {
+            gsap.to(img, {
+                y: () => (img.offsetHeight * 0.15),
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: img.parentElement,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: true
+                }
+            });
+        });
     }
 
     // Fallback if GSAP fails to load
