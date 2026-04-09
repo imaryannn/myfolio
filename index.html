@@ -3,223 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aryan — Full Stack Developer</title>
-    <meta name="description" content="Portfolio of Aryan — Developer crafting elegant, high-performance web experiences.">
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-    
+    <title>ARYAN — Systems Developer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Minimal Preloader -->
-    <div id="preloader">
-        <div class="preloader-content">
-            <span class="preloader-text">aryan.</span>
-            <div class="preloader-line"></div>
-        </div>
-    </div>
-
-    <!-- Smooth Scroll Progress -->
-    <div id="scroll-progress"></div>
-
-    <!-- Subtle Grain Overlay -->
-    <div class="grain-overlay"></div>
+    <!-- Global Structural Grid -->
+    <div class="global-grid"></div>
 
     <!-- Navigation -->
     <nav id="navbar">
-        <a href="#hero" class="nav-logo">aryan.</a>
+        <a href="#hero" class="nav-logo">ARYAN<span>_</span></a>
         <div class="nav-links">
-            <a href="#about" class="nav-link">About</a>
-            <a href="#projects" class="nav-link">Projects</a>
-            <a href="#skills" class="nav-link">Skills</a>
-            <a href="#contact" class="nav-link">Contact</a>
+            <a href="#about" class="nav-link">System.About</a>
+            <a href="#projects" class="nav-link">Exe.Projects</a>
+            <a href="#skills" class="nav-link">Data.Skills</a>
+            <a href="#contact" class="nav-link">Sys.Contact</a>
         </div>
         <button id="nav-toggle" aria-label="Toggle Menu">
-            <span></span><span></span>
+            <span></span><span></span><span></span>
         </button>
     </nav>
 
     <!-- Mobile Nav -->
     <div id="mobile-nav">
-        <div class="mobile-nav-inner">
-            <a href="#about" class="mobile-link">About</a>
-            <a href="#projects" class="mobile-link">Projects</a>
-            <a href="#skills" class="mobile-link">Skills</a>
-            <a href="#contact" class="mobile-link">Contact</a>
-        </div>
+        <!-- Reusing nav-links logic but styled for mobile if needed, or JS will toggle -->
     </div>
 
     <!-- Hero Section -->
-    <section id="hero" class="section hero">
-        <!-- Subtle background shapes for depth -->
-        <div class="hero-bg-shapes">
-            <img src="assets/hero_abstract_1775749593205.png" alt="Abstract Hero 3D" class="shape shape-img shape-1" data-parallax="-0.06">
-            <div class="shape shape-2" data-parallax="0.04"></div>
-        </div>
+    <section id="hero" class="hero section">
         
-        <div class="hero-content">
-            <div class="reveal-overflow">
+        <div class="hero-bg-container">
+            <!-- Base background parallax layer - Black Texture -->
+            <img src="https://images.unsplash.com/photo-1550684376-efcb6e0526f7?auto=format&fit=crop&w=2000&q=80" class="hero-base-img" style="opacity: 0.8; mix-blend-mode: normal;" data-speed="0" alt="Black Texture">
+        </div>
+
+        <div class="container hero-content">
+            <div data-reveal="fade-up">
                 <h1 class="hero-title">ARYAN</h1>
             </div>
-            <div class="reveal-overflow">
-                <p class="hero-subtitle">Full Stack Developer</p>
+            <div data-reveal="fade-up" data-delay="0.2">
+                <span class="hero-subtitle">// Full Stack Developer</span>
             </div>
-            <div class="reveal-fade mt-8">
-                <p class="hero-desc">Crafting minimal, elegant, and high-performance digital experiences.</p>
-                <div class="hero-actions">
-                    <a href="#projects" class="btn btn-primary">View Work</a>
-                </div>
+            <div data-reveal="fade-up" data-delay="0.4">
+                <p class="hero-desc">Architecting robust, high-performance systems and immersive interactive experiences at the frontier of the web.</p>
+                <a href="#projects" class="btn btn-primary">Initialize Sequence</a>
             </div>
         </div>
-        
-
     </section>
 
     <!-- About Section -->
-    <section id="about" class="section about">
-        <div class="container container-sm">
-            <div class="section-label" data-reveal>01 — About</div>
-            <h2 class="section-heading" data-reveal>Driven by aesthetics <br>& engineering.</h2>
-            
+    <section id="about" class="about section">
+        <div class="container">
+            <div class="section-label">System.Info</div>
+            <h2 class="section-heading" data-reveal="fade-up">Precision Engineering.</h2>
+
             <div class="about-grid">
-                <div class="about-text" data-reveal>
-                    <p>I am a developer who views code as a medium for design. My focus is on creating web applications that not only function flawlessly under the hood but also provide a seamless, intuitive, and calm experience for the user.</p>
-                    <p>By blending modern technologies with a meticulous eye for detail, I build solutions that feel less like software and more like crafted digital art. Every pixel and interaction is considered to build trust and delight.</p>
-                </div>
-                <div class="about-visual" data-reveal>
-                    <div class="abstract-card glass-panel">
-                        <img src="assets/about_abstract_1775749925310.png" class="parallax-img" alt="Liquid Glass Sculpture">
+                <div class="tech-panel" data-reveal="fade-right">
+                    <div class="about-text">
+                        <p><strong>MISSION //</strong> Construct scalable, distributed, and flawlessly designed client and server architectures.</p>
+                        <p>I specialize in translating complex logic into seamless digital products. My core focus lies in performance optimization, interactive front-end mechanics, and resilient backend data pipelines.</p>
+                        <a href="#contact" class="btn-link mt-8">Connect Securely -></a>
                     </div>
+                </div>
+                <div class="about-visual" data-reveal="fade-left">
+                    <div class="wireframe-cube"></div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="section projects">
+    <section id="projects" class="projects section">
         <div class="container">
-            <div class="section-label" data-reveal>02 — Work</div>
-            <h2 class="section-heading" data-reveal>Selected Projects</h2>
+            <div class="section-label">Execution.Log</div>
+            <h2 class="section-heading" data-reveal="fade-up">Deployed Assets</h2>
 
             <div class="project-list">
-                <!-- ZyroMeet -->
-                <div class="project-row" data-reveal>
+                
+                <!-- Project 1 -->
+                <article class="project-row" data-reveal="fade-up">
                     <div class="project-content">
-                        <span class="project-category">Communication</span>
+                        <span class="project-category">Protocol: Comms</span>
                         <h3 class="project-name">ZyroMeet</h3>
-                        <p class="project-snippet">A real-time meeting and video conferencing application built with WebRTC. Focused on clean UI and seamless connectivity without distractions.</p>
-                        <div class="project-tech">React, Node.js, WebRTC, Socket.io</div>
-                        <div class="project-links">
-                            <a href="#" class="btn-link">View Live Project ↗</a>
+                        <p class="project-snippet">Real-time low-latency video and audio meeting infrastructure designed for immediate deployment and robust P2P networking.</p>
+                        <div class="project-tech">
+                            <span>WebRTC</span>
+                            <span>Socket.io</span>
+                            <span>Node Environment</span>
                         </div>
+                        <a href="#" class="btn btn-outline">Access Module</a>
                     </div>
-                    <div class="project-media glass-panel" style="padding:0; overflow:hidden;">
-                        <img src="assets/project_abstract_1_1775749830513.png" class="parallax-img" alt="ZyroMeet Architecture">
+                    <div class="project-media">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" class="parallax-img" alt="ZyroMeet Architecture">
                     </div>
-                </div>
+                </article>
 
-                <!-- NodeChat -->
-                <div class="project-row" data-reveal>
+                <!-- Project 2 -->
+                <article class="project-row" data-reveal="fade-up">
                     <div class="project-content">
-                        <span class="project-category">Messaging</span>
+                        <span class="project-category">Protocol: P2P Chat</span>
                         <h3 class="project-name">NodeChat</h3>
-                        <p class="project-snippet">An elegant, instant chat platform featuring real-time state sync, typing indicators, and beautiful dark/light modes.</p>
-                        <div class="project-tech">Express, MongoDB, Socket.io, Vanilla JS</div>
-                        <div class="project-links">
-                            <a href="#" class="btn-link">View Source Code ↗</a>
+                        <p class="project-snippet">Encrypted, socket-driven instant messaging client featuring dynamic state syncing, read receipts, and minimal latency packet transfer.</p>
+                        <div class="project-tech">
+                            <span>Express.js</span>
+                            <span>MongoDB Streams</span>
+                            <span>WSS</span>
                         </div>
+                        <a href="#" class="btn btn-outline">Access Module</a>
                     </div>
-                    <div class="project-media glass-panel">
-                        <div class="mock-ui mock-chat">
-                            <div class="mock-messages">
-                                <div class="mock-msg left"></div>
-                                <div class="mock-msg right"></div>
-                                <div class="mock-msg left short"></div>
-                            </div>
-                            <div class="mock-input"></div>
-                        </div>
+                    <div class="project-media">
+                        <!-- High-quality Unsplash image for NodeChat -->
+                        <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=1200&q=80" class="parallax-img" alt="NodeChat Infrastructure">
                     </div>
-                </div>
+                </article>
 
-                <!-- WPDF -->
-                <div class="project-row" data-reveal>
+                <!-- Project 3 -->
+                <article class="project-row" data-reveal="fade-up">
                     <div class="project-content">
-                        <span class="project-category">Utility Tool</span>
-                        <h3 class="project-name">WPDF</h3>
-                        <p class="project-snippet">A powerful, entirely client-side browser tool for manipulating PDF files. Compress, split, and merge documents with complete privacy.</p>
-                        <div class="project-tech">HTML5, PDF.js, Web Workers</div>
-                        <div class="project-links">
-                            <a href="#" class="btn-link">View Live Project ↗</a>
+                        <span class="project-category">Protocol: Utility</span>
+                        <h3 class="project-name">WPDF Toolkit</h3>
+                        <p class="project-snippet">Client-side document processor leveraging Web Workers to compress, encrypt, and manipulate standard PDF file binaries securely.</p>
+                        <div class="project-tech">
+                            <span>Web Workers</span>
+                            <span>Binary Streams</span>
+                            <span>PDF.js API</span>
                         </div>
+                        <a href="#" class="btn btn-outline">Access Module</a>
                     </div>
-                    <div class="project-media glass-panel">
-                        <div class="mock-ui mock-document">
-                            <div class="mock-doc-page"></div>
-                            <div class="mock-controls"></div>
-                        </div>
+                    <div class="project-media">
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80" class="parallax-img" alt="WPDF System">
                     </div>
-                </div>
+                </article>
 
-                <!-- Portfolio -->
-                <div class="project-row" data-reveal>
-                    <div class="project-content">
-                        <span class="project-category">Web Experience</span>
-                        <h3 class="project-name">Portfolio</h3>
-                        <p class="project-snippet">This very website. An exploration into minimal design, sophisticated typography, and gentle micro-interactions.</p>
-                        <div class="project-tech">HTML5, CSS3, GSAP</div>
-                        <div class="project-links">
-                            <a href="#" class="btn-link">View Source Code ↗</a>
-                        </div>
-                    </div>
-                    <div class="project-media glass-panel">
-                        <div class="mock-ui mock-portfolio">
-                            <div class="mock-hero-text"></div>
-                            <div class="mock-hero-sub"></div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="section skills">
-        <div class="container container-sm">
-            <div class="section-label" data-reveal>03 — Expertise</div>
-            <h2 class="section-heading" data-reveal>Technical Arsenal</h2>
-
+    <section id="skills" class="skills section">
+        <div class="container">
+            <div class="section-label">Data.Registry</div>
+            <h2 class="section-heading" data-reveal="fade-up">Operating Parameters</h2>
+            
             <div class="skills-wrapper">
-                <div class="skill-group" data-reveal>
-                    <h3 class="skill-title">Frontend</h3>
+                <div class="skill-group" data-reveal="fade-up">
+                    <h3 class="skill-title">Core Languages</h3>
                     <ul class="skill-list">
-                        <li>HTML5 & CSS3</li>
-                        <li>JavaScript (ES6+)</li>
-                        <li>React & Next.js</li>
-                        <li>Tailwind CSS</li>
-                        <li>GSAP / Framer Motion</li>
+                        <li>TypeScript <span class="bar" style="width:90%"></span></li>
+                        <li>Python <span class="bar" style="width:85%"></span></li>
+                        <li>C++ / Systems <span class="bar" style="width:60%"></span></li>
                     </ul>
                 </div>
-                <div class="skill-group" data-reveal>
-                    <h3 class="skill-title">Backend</h3>
+                
+                <div class="skill-group" data-reveal="fade-up" data-delay="0.2">
+                    <h3 class="skill-title">Infrastructure</h3>
                     <ul class="skill-list">
-                        <li>Node.js</li>
-                        <li>Express</li>
-                        <li>Python</li>
-                        <li>RESTful APIs</li>
-                        <li>GraphQL</li>
+                        <li>Docker/Containers <span class="bar" style="width:80%"></span></li>
+                        <li>AWS Services <span class="bar" style="width:75%"></span></li>
+                        <li>Web Sockets <span class="bar" style="width:95%"></span></li>
                     </ul>
                 </div>
-                <div class="skill-group" data-reveal>
-                    <h3 class="skill-title">Database & Tools</h3>
+
+                <div class="skill-group" data-reveal="fade-up" data-delay="0.4">
+                    <h3 class="skill-title">Frameworks</h3>
                     <ul class="skill-list">
-                        <li>MongoDB</li>
-                        <li>PostgreSQL</li>
-                        <li>Git & GitHub</li>
-                        <li>Docker</li>
-                        <li>Figma</li>
+                        <li>React / Next <span class="bar" style="width:90%"></span></li>
+                        <li>GSAP / 3D <span class="bar" style="width:75%"></span></li>
+                        <li>Node Environment <span class="bar" style="width:95%"></span></li>
                     </ul>
                 </div>
             </div>
@@ -227,33 +177,27 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="section contact">
+    <section id="contact" class="contact section">
         <div class="container container-sm">
-            <div class="contact-box glass-panel" data-reveal>
-                <div class="section-label">04 — Contact</div>
-                <h2 class="section-heading">Let's build something beautiful.</h2>
-                <p class="contact-sub">Available for freelance opportunities and full-time roles.</p>
+            <div class="contact-box" data-reveal="fade-up">
+                <div class="section-label">Sys.Contact</div>
+                <h2 class="section-heading" style="margin-bottom:2rem;">Establish Connection</h2>
                 
-                <form id="contact-form" class="minimal-form">
-                    <div class="form-row">
-                        <div class="input-group">
-                            <input type="text" id="name" placeholder="Name" required>
-                            <label for="name">Name</label>
-                            <div class="line"></div>
-                        </div>
-                        <div class="input-group">
-                            <input type="email" id="email" placeholder="Email" required>
-                            <label for="email">Email</label>
-                            <div class="line"></div>
-                        </div>
+                <form id="contact-form" class="terminal-form">
+                    <div class="input-block">
+                        <label>Sys.User_ID:</label>
+                        <input type="text" placeholder="// Enter Designator" required>
                     </div>
-                    <div class="input-group">
-                        <textarea id="message" rows="3" placeholder="Message" required></textarea>
-                        <label for="message">Message</label>
-                        <div class="line"></div>
+                    <div class="input-block">
+                        <label>Sys.Secure_Link:</label>
+                        <input type="email" placeholder="// Enter Valid Email" required>
                     </div>
-                    <button type="submit" class="btn btn-outline">Send Message</button>
-                    <div class="form-status">Message sent successfully.</div>
+                    <div class="input-block">
+                        <label>Packet.Payload:</label>
+                        <textarea rows="4" placeholder="// Enter Transmission Data" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="align-self: flex-start; margin-top:1rem;">Transmit Buffer</button>
+                    <div class="form-status">Payload Accepted and Distributed.</div>
                 </form>
             </div>
         </div>
@@ -261,16 +205,13 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-bottom">
-                <div class="footer-brand">aryan.</div>
-                <div class="footer-links">
-                    <a href="https://github.com" target="_blank">GitHub</a>
-                    <a href="https://linkedin.com" target="_blank">LinkedIn</a>
-                    <a href="https://twitter.com" target="_blank">Twitter</a>
-                </div>
-                <div class="footer-copy">&copy; 2026 Aryan. All rights reserved.</div>
+        <div class="container footer-inner">
+            <div class="footer-brand">ARYAN_CORE // V_1.0.0</div>
+            <div class="footer-links">
+                <a href="#">[ Github ]</a>
+                <a href="#">[ Network ]</a>
             </div>
+            <div>STATUS: ONLINE</div>
         </div>
     </footer>
 
