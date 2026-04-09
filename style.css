@@ -320,7 +320,6 @@ button {
     object-fit: cover;
     transform: translate(-50%, -50%);
     opacity: 0.6;
-    mix-blend-mode: color-dodge;
 }
 
 .layer-rock {
@@ -344,6 +343,18 @@ button {
 .hero-content {
     max-width: 800px;
     z-index: 10;
+}
+
+.hero-intro {
+    font-family: var(--font-mono);
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: var(--accent-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.5rem;
+    margin-left: 0.3rem;
+    display: block;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
 }
 
 .hero-title {

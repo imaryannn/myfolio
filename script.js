@@ -43,18 +43,7 @@
         // --- Deep HERO Parallax Parallax ---
         const heroBg = document.querySelector('.hero-bg-container');
         
-        // Grid texture scales and shifts slowly
-        gsap.to('.hero-base-img', {
-            yPercent: 20,
-            scale: 1.1,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: '.hero',
-                start: 'top top',
-                end: 'bottom top',
-                scrub: true
-            }
-        });
+        // Grid texture scales and shifts slowly (Removed since bg is removed)
 
         // Floating Rock (Removed)
         // Floating Cache (Removed)
@@ -66,7 +55,9 @@
             const delay = parseFloat(el.getAttribute('data-delay')) || 0;
             
             let options = {
-                opacity: 0,
+                opacity: 1,
+                y: 0,
+                x: 0,
                 duration: 1,
                 delay: delay,
                 ease: 'power3.out',
@@ -77,11 +68,7 @@
                 }
             };
 
-            if (direction === 'fade-up') options.y = 50;
-            if (direction === 'fade-right') options.x = -50;
-            if (direction === 'fade-left') options.x = 50;
-
-            gsap.from(el, options);
+            gsap.to(el, options);
         });
 
         // --- Wireframe Cube Scroll Spin ---
