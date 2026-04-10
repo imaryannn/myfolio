@@ -42,9 +42,29 @@
 }
 
 html {
-    scroll-behavior: auto; /* GSAP will handle smoothness or we keep it native raw */
+    scroll-behavior: auto;
     font-size: 16px;
     background-color: var(--bg-primary);
+}
+
+html.lenis {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+    pointer-events: none;
 }
 
 body {
@@ -55,6 +75,15 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scroll container */
+body.lenis-scrolling {
+    pointer-events: none;
+}
+
+body.lenis-scrolling * {
+    pointer-events: auto;
 }
 
 a {
@@ -353,10 +382,45 @@ button {
     justify-content: flex-start;
     padding-top: 10vh;
     padding-bottom: 5vh;
+    position: relative;
+    will-change: transform;
 }
 
 .hero .container {
     width: 100%;
+}
+
+.hero-left,
+.hero-right {
+    will-change: transform;
+}
+
+.section {
+    padding: 15vh 0;
+    position: relative;
+    z-index: 2;
+    will-change: transform;
+}
+
+.section-heading,
+.section-label {
+    will-change: transform;
+}
+
+.wireframe-cube {
+    will-change: transform;
+}
+
+.project-row {
+    will-change: transform;
+}
+
+.skill-group {
+    will-change: transform;
+}
+
+.contact-box {
+    will-change: transform;
 }
 
 .hero-bg-container {

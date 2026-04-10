@@ -6,6 +6,55 @@
     'use strict';
 
     // ============================
+    // SMOOTH SCROLL (Desktop Only)
+    // ============================
+    let lenis = null;
+    
+    function initSmoothScroll() {
+        // Only enable on desktop (width > 1024px)
+        if (window.innerWidth > 1024 && typeof Lenis !== 'undefined') {
+            lenis = new Lenis({
+                duration: 1.5,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                orientation: 'vertical',
+                gestureOrientation: 'vertical',
+                smoothWheel: true,
+                wheelMultiplier: 0.8,
+                smoothTouch: false,
+                touchMultiplier: 2,
+                infinite: false,
+            });
+
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+
+            console.log('✅ Lenis Smooth Scroll Enabled');
+        } else if (typeof Lenis === 'undefined') {
+            console.warn('⚠️ Lenis library not loaded');
+        }
+    }
+
+    // Initialize smooth scroll
+    initSmoothScroll();
+
+    // Reinitialize on resize if crossing the threshold
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (window.innerWidth > 1024 && !lenis) {
+                initSmoothScroll();
+            } else if (window.innerWidth <= 1024 && lenis) {
+                lenis.destroy();
+                lenis = null;
+            }
+        }, 250);
+    });
+
+    // ============================
     // NAVIGATION SHRINK
     // ============================
     const navbar = document.getElementById('navbar');
@@ -69,6 +118,15 @@
 
         gsap.registerPlugin(ScrollTrigger);
 
+        // Sync Lenis with GSAP ScrollTrigger
+        if (lenis) {
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
+        }
+
         // Grid texture scales and shifts slowly (Removed since bg is removed)
 
         // Floating Rock (Removed)
@@ -98,19 +156,58 @@
         });
 
         // ================================
-        // PARALLAX LAYERS
+        // PARALLAX LAYERS (Desktop Only)
         // ================================
+        const isDesktop = window.innerWidth > 1024;
+
+        if (isDesktop) {
+            // Global grid subtle movement
+            gsap.to('.global-grid', {
+                backgroundPosition: '0px 400px',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: 'body',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 3
+                }
+            });
+
+            // Hero terminal floats up slower
+            gsap.to('.hero-right', {
+                yPercent: -35,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 2
+                }
+            });
+
+            // Hero left content moves slower
+            gsap.to('.hero-left', {
+                yPercent: -15,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '.hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1.5
+                }
+            });
+        }
 
         // Section headings drift up slower than scroll
         gsap.utils.toArray('.section-heading').forEach(el => {
             gsap.to(el, {
-                yPercent: -15,
+                yPercent: isDesktop ? -25 : -5,
                 ease: 'none',
                 scrollTrigger: {
                     trigger: el.closest('section'),
                     start: 'top bottom',
                     end: 'bottom top',
-                    scrub: 1.5
+                    scrub: isDesktop ? 2 : 0.5
                 }
             });
         });
@@ -118,13 +215,13 @@
         // Section labels drift up slightly faster
         gsap.utils.toArray('.section-label').forEach(el => {
             gsap.to(el, {
-                yPercent: -25,
+                yPercent: isDesktop ? -40 : -8,
                 ease: 'none',
                 scrollTrigger: {
                     trigger: el.closest('section'),
                     start: 'top bottom',
                     end: 'bottom top',
-                    scrub: 1
+                    scrub: isDesktop ? 1.5 : 0.5
                 }
             });
         });
@@ -133,15 +230,16 @@
         const cube = document.querySelector('.wireframe-cube');
         if (cube) {
             gsap.to(cube, {
-                rotationY: 360,
-                rotationZ: 90,
-                yPercent: -30,
+                rotationY: isDesktop ? 720 : 180,
+                rotationZ: isDesktop ? 180 : 45,
+                yPercent: isDesktop ? -50 : -10,
+                scale: isDesktop ? 1.1 : 1,
                 ease: 'none',
                 scrollTrigger: {
                     trigger: '.about',
                     start: 'top bottom',
                     end: 'bottom top',
-                    scrub: 1.5
+                    scrub: isDesktop ? 2 : 0.5
                 }
             });
         }
@@ -149,42 +247,58 @@
         // Project rows nudge upward at staggered depths
         gsap.utils.toArray('.project-row').forEach((row, i) => {
             gsap.to(row, {
-                yPercent: -8 * (i % 2 === 0 ? 1 : 1.5),
+                yPercent: isDesktop ? -15 * (i % 2 === 0 ? 1 : 1.5) : -3,
                 ease: 'none',
                 scrollTrigger: {
                     trigger: row,
                     start: 'top bottom',
                     end: 'bottom top',
-                    scrub: 1
+                    scrub: isDesktop ? 1.5 : 0.5
                 }
             });
         });
 
-        // Terminal wires in projects — no parallax (static)
+        // Terminal wires in projects subtle float
+        if (isDesktop) {
+            gsap.utils.toArray('.project-media .terminal-wire').forEach((terminal, i) => {
+                gsap.to(terminal, {
+                    y: -40,
+                    rotation: i % 2 === 0 ? 1 : -1,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: terminal.closest('.project-row'),
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: 2.5
+                    }
+                });
+            });
+        }
 
         // Skill groups float upward
         gsap.utils.toArray('.skill-group').forEach((el, i) => {
             gsap.to(el, {
-                yPercent: -10 - i * 3,
+                yPercent: isDesktop ? -15 - i * 5 : -5,
                 ease: 'none',
                 scrollTrigger: {
                     trigger: '.skills',
                     start: 'top bottom',
                     end: 'bottom top',
-                    scrub: 1
+                    scrub: isDesktop ? 1.5 : 0.5
                 }
             });
         });
 
         // Contact box drifts up
         gsap.to('.contact-box', {
-            yPercent: -10,
+            yPercent: isDesktop ? -20 : -5,
+            scale: isDesktop ? 1.02 : 1,
             ease: 'none',
             scrollTrigger: {
                 trigger: '.contact',
                 start: 'top bottom',
                 end: 'bottom top',
-                scrub: 1
+                scrub: isDesktop ? 1.5 : 0.5
             }
         });
 
