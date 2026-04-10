@@ -26,12 +26,53 @@
             });
 
             function raf(time) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
+                if (lenis) {
+                    lenis.raf(time);
+                    requestAnimationFrame(raf);
+                }
             }
             requestAnimationFrame(raf);
 
             console.log('✅ Lenis Smooth Scroll Enabled');
+            
+            // Full-page section scroll with long pause
+            let isScrolling = false;
+            let currentSectionIndex = 0;
+            const sections = document.querySelectorAll('.section');
+            
+            // Disable default Lenis wheel handling for manual control
+            let wheelTimeout;
+            window.addEventListener('wheel', (e) => {
+                if (isScrolling) {
+                    e.preventDefault();
+                    return;
+                }
+                
+                clearTimeout(wheelTimeout);
+                wheelTimeout = setTimeout(() => {
+                    const direction = e.deltaY > 0 ? 1 : -1;
+                    
+                    // Calculate target section
+                    let targetIndex = currentSectionIndex + direction;
+                    targetIndex = Math.max(0, Math.min(sections.length - 1, targetIndex));
+                    
+                    if (targetIndex !== currentSectionIndex) {
+                        isScrolling = true;
+                        currentSectionIndex = targetIndex;
+                        
+                        lenis.scrollTo(sections[targetIndex], {
+                            offset: 0,
+                            duration: 1.5,
+                            onComplete: () => {
+                                setTimeout(() => {
+                                    isScrolling = false;
+                                }, 2000);
+                            }
+                        });
+                    }
+                }, 50);
+            }, { passive: false });
+            
         } else if (typeof Lenis === 'undefined') {
             console.warn('⚠️ Lenis library not loaded');
         }
@@ -122,7 +163,9 @@
         if (lenis) {
             lenis.on('scroll', ScrollTrigger.update);
             gsap.ticker.add((time) => {
-                lenis.raf(time * 1000);
+                if (lenis) {
+                    lenis.raf(time * 1000);
+                }
             });
             gsap.ticker.lagSmoothing(0);
         }
