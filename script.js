@@ -21,10 +21,39 @@
     // MOBILE NAV
     // ============================
     const navToggle = document.getElementById('nav-toggle');
-    navToggle.addEventListener('click', () => {
-        navToggle.classList.toggle('active');
-        // If mobile nav overlay existed, toggle it here
-    });
+    const mobileNav = document.getElementById('mobile-nav');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // Clone nav links to mobile menu
+    if (mobileNav && navLinks.length > 0) {
+        navLinks.forEach(link => {
+            const clone = link.cloneNode(true);
+            mobileNav.appendChild(clone);
+        });
+    }
+    
+    if (navToggle && mobileNav) {
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+        });
+        
+        // Close menu when clicking a link
+        mobileNav.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                navToggle.classList.remove('active');
+                mobileNav.classList.remove('active');
+            }
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navToggle.contains(e.target) && !mobileNav.contains(e.target)) {
+                navToggle.classList.remove('active');
+                mobileNav.classList.remove('active');
+            }
+        });
+    }
 
     // ============================
     // GSAP LOGIC
