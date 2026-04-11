@@ -35,6 +35,23 @@
 
             console.log('✅ Lenis Smooth Scroll Enabled');
             
+            // Disable Lenis when hovering/interacting with terminal
+            let terminalActive = false;
+            
+            document.addEventListener('mouseenter', (e) => {
+                if (e.target.closest('.terminal-body')) {
+                    terminalActive = true;
+                    if (lenis) lenis.stop();
+                }
+            }, true);
+            
+            document.addEventListener('mouseleave', (e) => {
+                if (e.target.closest('.terminal-body')) {
+                    terminalActive = false;
+                    if (lenis) lenis.start();
+                }
+            }, true);
+            
             // Full-page section scroll with long pause
             let isScrolling = false;
             let currentSectionIndex = 0;
@@ -43,6 +60,13 @@
             // Disable default Lenis wheel handling for manual control
             let wheelTimeout;
             window.addEventListener('wheel', (e) => {
+                // Check if scrolling inside terminal
+                const terminalBody = e.target.closest('.terminal-body');
+                if (terminalBody) {
+                    // Allow native scroll in terminal, don't trigger page scroll
+                    return;
+                }
+                
                 if (isScrolling) {
                     e.preventDefault();
                     return;
@@ -287,36 +311,36 @@
             });
         }
 
-        // Project rows nudge upward at staggered depths
-        gsap.utils.toArray('.project-row').forEach((row, i) => {
-            gsap.to(row, {
-                yPercent: isDesktop ? -15 * (i % 2 === 0 ? 1 : 1.5) : -3,
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: row,
-                    start: 'top bottom',
-                    end: 'bottom top',
-                    scrub: isDesktop ? 1.5 : 0.5
-                }
-            });
-        });
+        // Project rows - removed parallax effect
+        // gsap.utils.toArray('.project-row').forEach((row, i) => {
+        //     gsap.to(row, {
+        //         yPercent: isDesktop ? -15 * (i % 2 === 0 ? 1 : 1.5) : -3,
+        //         ease: 'none',
+        //         scrollTrigger: {
+        //             trigger: row,
+        //             start: 'top bottom',
+        //             end: 'bottom top',
+        //             scrub: isDesktop ? 1.5 : 0.5
+        //         }
+        //     });
+        // });
 
-        // Terminal wires in projects subtle float
-        if (isDesktop) {
-            gsap.utils.toArray('.project-media .terminal-wire').forEach((terminal, i) => {
-                gsap.to(terminal, {
-                    y: -40,
-                    rotation: i % 2 === 0 ? 1 : -1,
-                    ease: 'none',
-                    scrollTrigger: {
-                        trigger: terminal.closest('.project-row'),
-                        start: 'top bottom',
-                        end: 'bottom top',
-                        scrub: 2.5
-                    }
-                });
-            });
-        }
+        // Terminal wires in projects - removed parallax effect
+        // if (isDesktop) {
+        //     gsap.utils.toArray('.project-media .terminal-wire').forEach((terminal, i) => {
+        //         gsap.to(terminal, {
+        //             y: -40,
+        //             rotation: i % 2 === 0 ? 1 : -1,
+        //             ease: 'none',
+        //             scrollTrigger: {
+        //                 trigger: terminal.closest('.project-row'),
+        //                 start: 'top bottom',
+        //                 end: 'bottom top',
+        //                 scrub: 2.5
+        //             }
+        //         });
+        //     });
+        // }
 
         // Skill groups float upward
         gsap.utils.toArray('.skill-group').forEach((el, i) => {

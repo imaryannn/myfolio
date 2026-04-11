@@ -519,6 +519,7 @@ button {
     justify-content: flex-start;
     scrollbar-width: thin;
     scrollbar-color: var(--accent-cyan) transparent;
+    max-height: 350px;
 }
 
 .hero-right .terminal-body::-webkit-scrollbar {
@@ -656,6 +657,7 @@ button {
     transform: rotateX(45deg) rotateZ(45deg);
     position: relative;
     background: rgba(255, 110, 39, 0.05);
+    margin-top: 20%;
 }
 
 /* --- PROJECTS SECTION --- */
@@ -788,7 +790,7 @@ button {
 
 .terminal-body {
     padding: 1.5rem;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     line-height: 1.8;
     flex: 1;
     display: flex;
