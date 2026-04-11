@@ -168,6 +168,23 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       
+      // Update status
+      if (pathname === '/api/status' && req.method === 'PUT') {
+        await db.collection('status').deleteMany({});
+        await db.collection('status').insertOne({ online: body.online });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+        return;
+      }
+      
+      // Get status
+      if (pathname === '/api/status' && req.method === 'GET') {
+        const status = await db.collection('status').findOne({});
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, online: status?.online !== false }));
+        return;
+      }
+      
       // Seed initial data
       if (pathname === '/api/seed' && req.method === 'POST') {
         // Seed projects from index.html

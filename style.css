@@ -898,6 +898,20 @@ button {
     gap: 1rem;
 }
 
+.skill-icon {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+    color: var(--accent-cyan);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.skill-list li:hover .skill-icon {
+    color: var(--accent-copper);
+    transform: scale(1.1);
+}
+
 .skill-list li > span {
     white-space: nowrap;
 }

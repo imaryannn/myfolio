@@ -42,6 +42,9 @@
 .stat-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .stat-value {
@@ -84,6 +87,9 @@
 
 .action-icon {
     font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .form-container {

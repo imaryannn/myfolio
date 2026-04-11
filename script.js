@@ -670,6 +670,19 @@ async function loadDynamicContent() {
             }
         }
         
+        // Load status
+        const statusRes = await fetch('http://localhost:3001/api/status');
+        const statusData = await statusRes.json();
+        
+        if (statusData.success) {
+            const statusElement = document.querySelector('.footer-inner > div:last-child');
+            if (statusElement) {
+                const isOnline = statusData.online !== false;
+                statusElement.textContent = isOnline ? 'STATUS: ONLINE' : 'STATUS: OFFLINE';
+                statusElement.style.color = isOnline ? '#27c93f' : 'var(--accent-red)';
+            }
+        }
+        
     } catch (error) {
         console.error('Error loading dynamic content:', error);
     }
