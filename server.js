@@ -101,13 +101,6 @@ const server = http.createServer(async (req, res) => {
       
       // Create project
       if (pathname === '/api/projects' && req.method === 'POST') {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) {
-          res.writeHead(401, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Unauthorized' }));
-          return;
-        }
-        
         const result = await db.collection('projects').insertOne({
           ...body,
           createdAt: new Date()

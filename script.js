@@ -575,3 +575,107 @@
     }
 
 })();
+
+
+// ============================
+// LOAD DYNAMIC DATA FROM API
+// ============================
+async function loadDynamicContent() {
+    try {
+        // Load projects
+        const projectsRes = await fetch('http://localhost:3001/api/projects');
+        const projectsData = await projectsRes.json();
+        
+        if (projectsData.success && projectsData.projects) {
+            const projectList = document.querySelector('.project-list');
+            projectList.innerHTML = projectsData.projects.map((p, i) => `
+                <article class="project-row">
+                    <div class="project-content">
+                        <span class="project-category">${p.category}</span>
+                        <h3 class="project-name">${p.name}</h3>
+                        <p class="project-snippet">${p.description}</p>
+                        <div class="project-tech">
+                            ${p.tech.map(t => `<span>${t}</span>`).join('')}
+                        </div>
+                        <a href="${p.url}" target="_blank" class="btn btn-outline">Access Module</a>
+                    </div>
+                    <div class="project-media">
+                        <div class="terminal-wire">
+                            <div class="terminal-header"><span class="dot"></span><span class="dot"></span><span class="dot"></span> ${p.name.toUpperCase().replace(/ /g, '_')}.SYS</div>
+                            <div class="terminal-body">
+                                <span class="term-line">> loading ${p.name}...</span>
+                                <span class="term-line">> initializing modules...</span>
+                                <span class="term-line" style="color:var(--accent-cyan);">> system ready</span>
+                                <div class="term-loader"></div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+        
+        // Load skills
+        const skillsRes = await fetch('http://localhost:3001/api/skills');
+        const skillsData = await skillsRes.json();
+        
+        if (skillsData.success && skillsData.skills) {
+            const skillsWrapper = document.querySelector('.skills-wrapper');
+            skillsWrapper.innerHTML = skillsData.skills.map((s, i) => `
+                <div class="skill-group animate-bars">
+                    <h3 class="skill-title">${s.category}</h3>
+                    <ul class="skill-list">
+                        ${s.items.map(item => `
+                            <li><span>${item.name}</span> <div class="bar-bg"><div class="bar-fill" style="width: ${item.level}%;"></div></div></li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+        
+        // Load profile
+        const profileRes = await fetch('http://localhost:3001/api/profile');
+        const profileData = await profileRes.json();
+        
+        if (profileData.success && profileData.profile) {
+            const p = profileData.profile;
+            
+            // Update hero
+            if (p.hero) {
+                const heroTitle = document.querySelector('.hero-title');
+                const heroSubtitle = document.querySelector('.hero-subtitle');
+                const heroDesc = document.querySelector('.hero-desc');
+                
+                if (heroTitle) heroTitle.textContent = p.hero.title || 'ARYAN';
+                if (heroSubtitle) heroSubtitle.textContent = '// ' + (p.hero.subtitle || 'Full Stack Developer');
+                if (heroDesc) heroDesc.textContent = p.hero.description || '';
+            }
+            
+            // Update about
+            if (p.about) {
+                const aboutText = document.querySelector('.about-text');
+                if (aboutText) {
+                    aboutText.innerHTML = `<p>${p.about.text}</p><a href="#contact" class="btn-link mt-8">Connect Securely -></a>`;
+                }
+            }
+            
+            // Update footer links
+            if (p.contact) {
+                const footerLinks = document.querySelector('.footer-links');
+                if (footerLinks) {
+                    footerLinks.innerHTML = `
+                        <a href="${p.contact.github}" target="_blank">[ Github ]</a>
+                        <a href="${p.contact.linkedin}" target="_blank">[ LinkedIn ]</a>
+                    `;
+                }
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error loading dynamic content:', error);
+    }
+}
+
+// Load content on page load
+if (window.location.pathname === '/' || window.location.pathname.includes('index.html')) {
+    loadDynamicContent();
+}
