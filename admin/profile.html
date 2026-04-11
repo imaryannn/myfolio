@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROFILE — ADMIN</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <div class="global-grid"></div>
+    
+    <nav id="admin-nav">
+        <a href="/admin/dashboard.html" class="nav-logo">ADMIN<span>_CORE</span></a>
+        <div class="nav-links">
+            <a href="/admin/dashboard.html" class="nav-link">Dashboard</a>
+            <a href="/admin/projects.html" class="nav-link">Projects</a>
+            <a href="/admin/skills.html" class="nav-link">Skills</a>
+            <a href="/admin/profile.html" class="nav-link active">Profile</a>
+            <a href="/" class="nav-link">View Site</a>
+            <button id="logoutBtn" class="btn btn-outline" style="padding: 0.5rem 1rem;">Logout</button>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <div class="container">
+            <div class="section-label">Manage.Profile</div>
+            <h1 class="section-heading">Profile</h1>
+
+            <div class="admin-content">
+                <div class="form-container">
+                    <h2 style="font-family: var(--font-mono); color: var(--accent-cyan); margin-bottom: 1.5rem;">EDIT_PROFILE</h2>
+                    <form id="profileForm">
+                        <h3 style="color: var(--accent-copper); margin-bottom: 1rem; font-family: var(--font-heading);">Hero Section</h3>
+                        <div class="form-field">
+                            <label>Title:</label>
+                            <input type="text" id="heroTitle" name="heroTitle" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Subtitle:</label>
+                            <input type="text" id="heroSubtitle" name="heroSubtitle" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Description:</label>
+                            <textarea id="heroDescription" name="heroDescription" required></textarea>
+                        </div>
+                        
+                        <h3 style="color: var(--accent-copper); margin: 2rem 0 1rem; font-family: var(--font-heading);">About Section</h3>
+                        <div class="form-field">
+                            <label>About Text:</label>
+                            <textarea id="aboutText" name="aboutText" rows="6" required></textarea>
+                        </div>
+                        
+                        <h3 style="color: var(--accent-copper); margin: 2rem 0 1rem; font-family: var(--font-heading);">Contact Info</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Email:</label>
+                                <input type="email" id="contactEmail" name="contactEmail" required>
+                            </div>
+                            <div class="form-field">
+                                <label>GitHub URL:</label>
+                                <input type="url" id="contactGithub" name="contactGithub" required>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label>LinkedIn URL:</label>
+                            <input type="url" id="contactLinkedin" name="contactLinkedin" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">Save Profile</button>
+                        <div id="profileMsg" style="margin-top: 1rem; font-family: var(--font-mono);"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="admin.js"></script>
+    <script>
+        async function loadProfile() {
+            try {
+                const res = await fetch('http://localhost:3001/api/profile');
+                const data = await res.json();
+                
+                if (!data.profile) {
+                    return;
+                }
+                
+                const p = data.profile;
+                document.getElementById('heroTitle').value = p.hero?.title || '';
+                document.getElementById('heroSubtitle').value = p.hero?.subtitle || '';
+                document.getElementById('heroDescription').value = p.hero?.description || '';
+                document.getElementById('aboutText').value = p.about?.text || '';
+                document.getElementById('contactEmail').value = p.contact?.email || '';
+                document.getElementById('contactGithub').value = p.contact?.github || '';
+                document.getElementById('contactLinkedin').value = p.contact?.linkedin || '';
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+        
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const profileData = {
+                hero: {
+                    title: formData.get('heroTitle'),
+                    subtitle: formData.get('heroSubtitle'),
+                    description: formData.get('heroDescription')
+                },
+                about: {
+                    text: formData.get('aboutText')
+                },
+                contact: {
+                    email: formData.get('contactEmail'),
+                    github: formData.get('contactGithub'),
+                    linkedin: formData.get('contactLinkedin')
+                }
+            };
+            
+            try {
+                const token = localStorage.getItem('adminToken');
+                const res = await fetch('http://localhost:3001/api/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+                
+                if (res.ok) {
+                    document.getElementById('profileMsg').textContent = '✓ Profile saved successfully!';
+                    document.getElementById('profileMsg').style.color = '#27c93f';
+                } else {
+                    throw new Error('Failed');
+                }
+            } catch (error) {
+                document.getElementById('profileMsg').textContent = '✗ Error saving profile';
+                document.getElementById('profileMsg').style.color = 'var(--accent-red)';
+            }
+        });
+
+        loadProfile();
+    </script>
+</body>
+</html>

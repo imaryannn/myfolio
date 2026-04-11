@@ -99,6 +99,46 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       
+      // Create project
+      if (pathname === '/api/projects' && req.method === 'POST') {
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+          res.writeHead(401, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Unauthorized' }));
+          return;
+        }
+        
+        const result = await db.collection('projects').insertOne({
+          ...body,
+          createdAt: new Date()
+        });
+        
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, id: result.insertedId }));
+        return;
+      }
+      
+      // Update project
+      if (pathname.startsWith('/api/projects/') && req.method === 'PUT') {
+        const id = pathname.split('/')[3];
+        await db.collection('projects').updateOne(
+          { _id: new ObjectId(id) },
+          { $set: { ...body, updatedAt: new Date() } }
+        );
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+        return;
+      }
+      
+      // Delete project
+      if (pathname.startsWith('/api/projects/') && req.method === 'DELETE') {
+        const id = pathname.split('/')[3];
+        await db.collection('projects').deleteOne({ _id: new ObjectId(id) });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+        return;
+      }
+      
       // Get all skills
       if (pathname === '/api/skills' && req.method === 'GET') {
         const skills = await db.collection('skills').find().toArray();
@@ -107,11 +147,135 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       
+      // Update skills
+      if (pathname === '/api/skills' && req.method === 'PUT') {
+        await db.collection('skills').deleteMany({});
+        if (body.skills && body.skills.length > 0) {
+          await db.collection('skills').insertMany(body.skills);
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+        return;
+      }
+      
       // Get profile
       if (pathname === '/api/profile' && req.method === 'GET') {
         const profile = await db.collection('profile').findOne({});
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, profile }));
+        return;
+      }
+      
+      // Update profile
+      if (pathname === '/api/profile' && req.method === 'PUT') {
+        await db.collection('profile').deleteMany({});
+        await db.collection('profile').insertOne(body);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+        return;
+      }
+      
+      // Seed initial data
+      if (pathname === '/api/seed' && req.method === 'POST') {
+        // Seed projects from index.html
+        const projects = [
+          {
+            name: 'ZyroMeet',
+            category: 'Protocol: Comms',
+            description: 'Built a browser-based video calling app using WebRTC for peer-to-peer media streams and WebSockets for signaling.',
+            tech: ['WebRTC', 'WebSocket', 'React'],
+            url: 'https://zyromeet.onrender.com/',
+            createdAt: new Date()
+          },
+          {
+            name: 'NodeChat',
+            category: 'Protocol: P2P Chat',
+            description: 'Real-time chat app built on Node.js and Socket.io. Handles bidirectional WebSocket connections.',
+            tech: ['Express.js', 'MongoDB Streams', 'WSS'],
+            url: 'https://nodechat-aivw.onrender.com/',
+            createdAt: new Date()
+          },
+          {
+            name: 'WPDF Toolkit',
+            category: 'Protocol: Utility',
+            description: 'Client-side document processor leveraging Web Workers to compress, encrypt, and manipulate PDF files.',
+            tech: ['Web Workers', 'Binary Streams', 'PDF.js API'],
+            url: 'https://imaryannn.github.io/wpdf/',
+            createdAt: new Date()
+          },
+          {
+            name: 'Prioramail',
+            category: 'Protocol: App',
+            description: 'Minimal email platform with secure authentication and full email management capabilities.',
+            tech: ['HTML/JS', 'Express', 'MongoDB', 'OAuth/JWT', 'Gmail API'],
+            url: 'https://prioramail.vercel.app/',
+            createdAt: new Date()
+          },
+          {
+            name: 'Syncyt',
+            category: 'Protocol: Interactive',
+            description: 'Real-time interactive platform with synchronized media and live communication features.',
+            tech: ['Socket.io', 'Express', 'Node.js', 'YouTube API'],
+            url: 'https://syncyt.onrender.com/',
+            createdAt: new Date()
+          }
+        ];
+        
+        // Seed skills
+        const skills = [
+          {
+            category: 'Frontend Logic',
+            items: [
+              { name: 'JavaScript (ES6+)', level: 95 },
+              { name: 'HTML5', level: 95 },
+              { name: 'CSS3', level: 90 }
+            ]
+          },
+          {
+            category: 'Backend & Network',
+            items: [
+              { name: 'Node.js', level: 85 },
+              { name: 'Express.js', level: 90 },
+              { name: 'Socket.io / WSS', level: 85 }
+            ]
+          },
+          {
+            category: 'Data & Systems',
+            items: [
+              { name: 'MongoDB', level: 80 },
+              { name: 'REST APIs', level: 90 },
+              { name: 'Git & Auth', level: 85 }
+            ]
+          }
+        ];
+        
+        // Seed profile
+        const profile = {
+          hero: {
+            title: 'ARYAN',
+            subtitle: 'Full Stack Developer',
+            description: 'Architecting robust, high-performance systems and immersive interactive experiences at the frontier of the web.'
+          },
+          about: {
+            text: 'Build scalable, distributed, and production-grade client-server systems that actually work under pressure. I write real code — Node.js backends, REST APIs, WebSocket servers, MongoDB pipelines, and front-end UIs that are fast and functional.'
+          },
+          contact: {
+            email: 'thatsaryn@gmail.com',
+            github: 'https://github.com/imaryannn',
+            linkedin: 'https://www.linkedin.com/in/aryan-2064153a0/'
+          }
+        };
+        
+        await db.collection('projects').deleteMany({});
+        await db.collection('skills').deleteMany({});
+        await db.collection('profile').deleteMany({});
+        
+        await db.collection('projects').insertMany(projects);
+        await db.collection('skills').insertMany(skills);
+        await db.collection('profile').insertOne(profile);
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, message: 'Database seeded successfully' }));
         return;
       }
       

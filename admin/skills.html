@@ -28,8 +28,11 @@
             <h1 class="section-heading">Skills</h1>
 
             <div class="admin-content">
-                <div class="skills-list" id="skillsList">
-                    <p style="color: var(--text-muted);">Loading skills...</p>
+                <div class="form-container">
+                    <h2 style="font-family: var(--font-mono); color: var(--accent-cyan); margin-bottom: 1.5rem;">EDIT_SKILLS</h2>
+                    <div id="skillsEditor"></div>
+                    <button id="saveSkillsBtn" class="btn btn-primary" style="margin-top: 1.5rem;">Save All Skills</button>
+                    <div id="skillsMsg" style="margin-top: 1rem; font-family: var(--font-mono);"></div>
                 </div>
             </div>
         </div>
@@ -37,31 +40,112 @@
 
     <script src="admin.js"></script>
     <script>
+        let skillsData = [];
+        
         async function loadSkills() {
             try {
                 const res = await fetch('http://localhost:3001/api/skills');
                 const data = await res.json();
                 
-                const list = document.getElementById('skillsList');
-                
-                if (!data.skills || data.skills.length === 0) {
-                    list.innerHTML = '<p style="color: var(--text-muted);">No skills yet.</p>';
-                    return;
-                }
-                
-                list.innerHTML = data.skills.map(s => `
-                    <div class="skill-item">
-                        <h3>${s.category}</h3>
-                        <ul>
-                            ${s.items?.map(item => `<li>${item.name} - ${item.level}%</li>`).join('') || ''}
-                        </ul>
-                    </div>
-                `).join('');
+                skillsData = data.skills || [];
+                renderSkillsEditor();
             } catch (error) {
                 console.error('Error loading skills:', error);
-                document.getElementById('skillsList').innerHTML = '<p style="color: var(--accent-red);">Error loading skills</p>';
             }
         }
+        
+        function renderSkillsEditor() {
+            const editor = document.getElementById('skillsEditor');
+            
+            if (skillsData.length === 0) {
+                editor.innerHTML = '<p style="color: var(--text-muted);">No skills yet. Add a category below.</p>';
+                return;
+            }
+            
+            editor.innerHTML = skillsData.map((category, catIndex) => `
+                <div class="skill-category-editor" style="background: rgba(0,240,255,0.05); border: 1px solid var(--border-chrome); padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <input type="text" value="${category.category}" onchange="updateCategory(${catIndex}, this.value)" style="background: rgba(0,0,0,0.5); border: 1px solid var(--accent-cyan); padding: 0.5rem 1rem; color: var(--accent-cyan); font-family: var(--font-mono); font-size: 1.1rem; font-weight: bold;">
+                        <button onclick="deleteCategory(${catIndex})" class="btn btn-outline btn-small" style="background: rgba(255,51,51,0.1); border-color: var(--accent-red); color: var(--accent-red);">Delete Category</button>
+                    </div>
+                    <div class="skills-items">
+                        ${category.items?.map((item, itemIndex) => `
+                            <div style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 1rem; margin-bottom: 0.75rem; align-items: center;">
+                                <input type="text" value="${item.name}" onchange="updateSkillName(${catIndex}, ${itemIndex}, this.value)" placeholder="Skill name" style="background: rgba(0,0,0,0.5); border: 1px solid var(--border-chrome); padding: 0.5rem; color: #fff; font-family: var(--font-mono);">
+                                <input type="number" value="${item.level}" min="0" max="100" onchange="updateSkillLevel(${catIndex}, ${itemIndex}, this.value)" placeholder="Level" style="background: rgba(0,0,0,0.5); border: 1px solid var(--border-chrome); padding: 0.5rem; color: #fff; font-family: var(--font-mono);">
+                                <button onclick="deleteSkill(${catIndex}, ${itemIndex})" style="background: none; border: none; color: var(--accent-red); cursor: pointer; font-size: 1.2rem;">✕</button>
+                            </div>
+                        `).join('') || ''}
+                    </div>
+                    <button onclick="addSkill(${catIndex})" class="btn btn-outline btn-small" style="margin-top: 0.5rem;">+ Add Skill</button>
+                </div>
+            `).join('');
+            
+            editor.innerHTML += '<button onclick="addCategory()" class="btn btn-outline" style="width: 100%;">+ Add Category</button>';
+        }
+        
+        function updateCategory(catIndex, value) {
+            skillsData[catIndex].category = value;
+        }
+        
+        function updateSkillName(catIndex, itemIndex, value) {
+            skillsData[catIndex].items[itemIndex].name = value;
+        }
+        
+        function updateSkillLevel(catIndex, itemIndex, value) {
+            skillsData[catIndex].items[itemIndex].level = parseInt(value);
+        }
+        
+        function addCategory() {
+            skillsData.push({
+                category: 'New Category',
+                items: []
+            });
+            renderSkillsEditor();
+        }
+        
+        function deleteCategory(catIndex) {
+            if (!confirm('Delete this category?')) return;
+            skillsData.splice(catIndex, 1);
+            renderSkillsEditor();
+        }
+        
+        function addSkill(catIndex) {
+            if (!skillsData[catIndex].items) {
+                skillsData[catIndex].items = [];
+            }
+            skillsData[catIndex].items.push({ name: 'New Skill', level: 50 });
+            renderSkillsEditor();
+        }
+        
+        function deleteSkill(catIndex, itemIndex) {
+            skillsData[catIndex].items.splice(itemIndex, 1);
+            renderSkillsEditor();
+        }
+        
+        document.getElementById('saveSkillsBtn').addEventListener('click', async () => {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const res = await fetch('http://localhost:3001/api/skills', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ skills: skillsData })
+                });
+                
+                if (res.ok) {
+                    document.getElementById('skillsMsg').textContent = '✓ Skills saved successfully!';
+                    document.getElementById('skillsMsg').style.color = '#27c93f';
+                } else {
+                    throw new Error('Failed');
+                }
+            } catch (error) {
+                document.getElementById('skillsMsg').textContent = '✗ Error saving skills';
+                document.getElementById('skillsMsg').style.color = 'var(--accent-red)';
+            }
+        });
 
         loadSkills();
     </script>
