@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN ACCESS — ARYAN CORE</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-primary);
+        }
+        .login-container {
+            max-width: 500px;
+            width: 90%;
+        }
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-chrome);
+            padding: 3rem;
+            position: relative;
+        }
+        .login-box::before,
+        .login-box::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-cyan);
+        }
+        .login-box::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .login-box::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+        .login-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--accent-copper);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+        .login-subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        .form-group input {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-chrome);
+            padding: 15px;
+            font-family: var(--font-mono);
+            color: #fff;
+            transition: 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-copper);
+            background: rgba(255, 110, 39, 0.05);
+        }
+        .error-msg {
+            font-family: var(--font-mono);
+            color: var(--accent-red);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-msg.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="global-grid"></div>
+    
+    <div class="login-container">
+        <div class="login-box">
+            <h1 class="login-title">ADMIN_ACCESS</h1>
+            <p class="login-subtitle">// SECURE AUTHENTICATION REQUIRED</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>SYS.EMAIL:</label>
+                    <input type="email" id="email" placeholder="admin@aryan.dev" required>
+                </div>
+                <div class="form-group">
+                    <label>SYS.PASSWORD:</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    AUTHENTICATE
+                </button>
+                <div class="error-msg" id="errorMsg"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const errorMsg = document.getElementById('errorMsg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.classList.remove('active');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            console.log('Attempting login with:', email);
+
+            try {
+                const res = await fetch('http://localhost:3001/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                console.log('Response status:', res.status);
+                const data = await res.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    localStorage.setItem('adminToken', data.token);
+                    localStorage.setItem('adminUser', JSON.stringify(data.user));
+                    window.location.href = '/admin/dashboard.html';
+                } else {
+                    errorMsg.textContent = '✗ ' + (data.error || 'Authentication failed');
+                    errorMsg.classList.add('active');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMsg.textContent = '✗ Connection error: ' + error.message;
+                errorMsg.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

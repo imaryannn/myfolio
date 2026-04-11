@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN DASHBOARD — ARYAN CORE</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <div class="global-grid"></div>
+    
+    <nav id="admin-nav">
+        <a href="/admin/dashboard.html" class="nav-logo">ADMIN<span>_CORE</span></a>
+        <div class="nav-links">
+            <a href="/admin/dashboard.html" class="nav-link active">Dashboard</a>
+            <a href="/admin/projects.html" class="nav-link">Projects</a>
+            <a href="/admin/skills.html" class="nav-link">Skills</a>
+            <a href="/admin/profile.html" class="nav-link">Profile</a>
+            <a href="/" class="nav-link">View Site</a>
+            <button id="logoutBtn" class="btn btn-outline" style="padding: 0.5rem 1rem;">Logout</button>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <div class="container">
+            <div class="section-label">System.Overview</div>
+            <h1 class="section-heading">Control Panel</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📁</div>
+                    <div class="stat-value" id="projectCount">0</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value" id="skillCount">0</div>
+                    <div class="stat-label">Skills</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✓</div>
+                    <div class="stat-value">ONLINE</div>
+                    <div class="stat-label">Status</div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h2 style="font-family: var(--font-mono); color: var(--accent-cyan); margin-bottom: 1.5rem;">QUICK_ACTIONS</h2>
+                <div class="action-grid">
+                    <a href="/admin/projects.html" class="action-card">
+                        <span class="action-icon">+</span>
+                        <span>Add Project</span>
+                    </a>
+                    <a href="/admin/skills.html" class="action-card">
+                        <span class="action-icon">⚙</span>
+                        <span>Edit Skills</span>
+                    </a>
+                    <a href="/admin/profile.html" class="action-card">
+                        <span class="action-icon">👤</span>
+                        <span>Update Profile</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="admin.js"></script>
+    <script>
+        async function loadStats() {
+            try {
+                const [projectsRes, skillsRes] = await Promise.all([
+                    fetch('http://localhost:3001/api/projects'),
+                    fetch('http://localhost:3001/api/skills')
+                ]);
+
+                const projectsData = await projectsRes.json();
+                const skillsData = await skillsRes.json();
+
+                document.getElementById('projectCount').textContent = projectsData.projects?.length || 0;
+                document.getElementById('skillCount').textContent = skillsData.skills?.length || 0;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>
