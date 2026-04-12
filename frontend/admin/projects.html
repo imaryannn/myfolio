@@ -30,8 +30,6 @@
             <h1 class="section-heading">Projects</h1>
 
             <div class="admin-content">
-                <button id="seedBtn" class="btn btn-primary" style="margin-bottom: 2rem;">Seed Database</button>
-                
                 <div class="form-container">
                     <h2 style="font-family: var(--font-mono); color: var(--accent-cyan); margin-bottom: 1.5rem;" id="formTitle">ADD_PROJECT</h2>
                     <form id="projectForm">
@@ -77,20 +75,6 @@
     <script src="admin.js"></script>
     <script>
         let editMode = false;
-        
-        
-        document.getElementById('seedBtn').addEventListener('click', async () => {
-            if (!confirm('This will reset all data. Continue?')) return;
-            
-            try {
-                const res = await fetch(`${API_BASE_URL}/api/seed`, { method: 'POST' });
-                const data = await res.json();
-                alert(data.message || 'Database seeded!');
-                loadProjects();
-            } catch (error) {
-                alert('Error seeding database');
-            }
-        });
         
         
         document.getElementById('cancelBtn').addEventListener('click', () => {
