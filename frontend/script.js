@@ -424,9 +424,9 @@ async function loadDynamicContent() {
                         <h3 class="project-name">${p.name}</h3>
                         <p class="project-snippet">${p.description}</p>
                         <div class="project-tech">
-                            ${p.tech.map(t => `<span>${t}</span>`).join('')}
+                            ${p.techStack.map(t => `<span>${t}</span>`).join('')}
                         </div>
-                        <a href="${p.url}" target="_blank" class="btn btn-outline">Access Module</a>
+                        <a href="${p.link}" target="_blank" class="btn btn-outline">Access Module</a>
                     </div>
                     <div class="project-media">
                         <div class="terminal-wire">
