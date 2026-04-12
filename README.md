@@ -5,8 +5,6 @@ A modern, cyberpunk-themed developer portfolio with real-time admin panel and dy
 ## 🚀 Live Demo
 
 - **Portfolio**: https://aryanfolio.vercel.app
-- **Admin Panel**: https://aryanfolio.vercel.app/admin/login.html
-- **Backend API**: https://backendaryanfolio.vercel.app
 
 ## ✨ Features
 
