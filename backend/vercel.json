@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/backend/api/$1" }
+    { "source": "/api/projects/:id", "destination": "/api/projects/[id]" },
+    { "source": "/api/(.*)", "destination": "/api/$1" }
   ],
   "headers": [
     {
