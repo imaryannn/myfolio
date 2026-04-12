@@ -1,8 +1,0 @@
-const fs = require('fs');
-const path = require('path');
-
-module.exports = (req, res) => {
-  const html = fs.readFileSync(path.resolve('index.html'), 'utf8');
-  res.setHeader('Content-Type', 'text/html');
-  res.status(200).end(html);
-};
