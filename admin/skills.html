@@ -6,6 +6,8 @@
     <title>SKILLS — ADMIN</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="admin-style.css">
+    <script src="../config.js"></script>
+
 </head>
 <body>
     <div class="global-grid"></div>
@@ -44,7 +46,7 @@
         
         async function loadSkills() {
             try {
-                const res = await fetch('http://localhost:3001/api/skills');
+                const res = await fetch('${API_BASE_URL}/api/skills');
                 const data = await res.json();
                 
                 skillsData = data.skills || [];
@@ -126,7 +128,7 @@
         document.getElementById('saveSkillsBtn').addEventListener('click', async () => {
             try {
                 const token = localStorage.getItem('adminToken');
-                const res = await fetch('http://localhost:3001/api/skills', {
+                const res = await fetch('${API_BASE_URL}/api/skills', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

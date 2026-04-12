@@ -6,6 +6,8 @@
     <title>ADMIN DASHBOARD — ARYAN CORE</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="admin-style.css">
+    <script src="../config.js"></script>
+
 </head>
 <body>
     <div class="global-grid"></div>
@@ -107,9 +109,9 @@
         async function loadStats() {
             try {
                 const [projectsRes, skillsRes, statusRes] = await Promise.all([
-                    fetch('http://localhost:3001/api/projects'),
-                    fetch('http://localhost:3001/api/skills'),
-                    fetch('http://localhost:3001/api/status')
+                    fetch('${API_BASE_URL}/api/projects'),
+                    fetch('${API_BASE_URL}/api/skills'),
+                    fetch('${API_BASE_URL}/api/status')
                 ]);
 
                 const projectsData = await projectsRes.json();
@@ -152,7 +154,7 @@
             
             try {
                 const token = localStorage.getItem('adminToken');
-                await fetch('http://localhost:3001/api/status', {
+                await fetch('${API_BASE_URL}/api/status', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

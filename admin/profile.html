@@ -6,6 +6,8 @@
     <title>PROFILE — ADMIN</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="admin-style.css">
+    <script src="../config.js"></script>
+
 </head>
 <body>
     <div class="global-grid"></div>
@@ -79,7 +81,7 @@
     <script>
         async function loadProfile() {
             try {
-                const res = await fetch('http://localhost:3001/api/profile');
+                const res = await fetch('${API_BASE_URL}/api/profile');
                 const data = await res.json();
                 
                 if (!data.profile) {
@@ -121,7 +123,7 @@
             
             try {
                 const token = localStorage.getItem('adminToken');
-                const res = await fetch('http://localhost:3001/api/profile', {
+                const res = await fetch('${API_BASE_URL}/api/profile', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

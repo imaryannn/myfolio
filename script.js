@@ -413,7 +413,7 @@
 })();
 async function loadDynamicContent() {
     try {
-        const projectsRes = await fetch('http://localhost:3001/api/projects');
+        const projectsRes = await fetch(`${API_BASE_URL}/api/projects`);
         const projectsData = await projectsRes.json();
         if (projectsData.success && projectsData.projects) {
             const projectList = document.querySelector('.project-list');
@@ -442,7 +442,7 @@ async function loadDynamicContent() {
                 </article>
             `).join('');
         }
-        const skillsRes = await fetch('http://localhost:3001/api/skills');
+        const skillsRes = await fetch(`${API_BASE_URL}/api/skills`);
         const skillsData = await skillsRes.json();
         if (skillsData.success && skillsData.skills) {
             const skillsWrapper = document.querySelector('.skills-wrapper');
@@ -457,7 +457,7 @@ async function loadDynamicContent() {
                 </div>
             `).join('');
         }
-        const profileRes = await fetch('http://localhost:3001/api/profile');
+        const profileRes = await fetch(`${API_BASE_URL}/api/profile`);
         const profileData = await profileRes.json();
         if (profileData.success && profileData.profile) {
             const p = profileData.profile;
@@ -485,7 +485,7 @@ async function loadDynamicContent() {
                 }
             }
         }
-        const statusRes = await fetch('http://localhost:3001/api/status');
+        const statusRes = await fetch(`${API_BASE_URL}/api/status`);
         const statusData = await statusRes.json();
         if (statusData.success) {
             const statusElement = document.querySelector('.footer-inner > div:last-child');
