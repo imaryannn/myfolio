@@ -2,6 +2,12 @@ const { connectToDatabase } = require('../../lib/mongodb');
 const { authenticate } = require('../../lib/auth');
 const { ObjectId } = require('mongodb');
 module.exports = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
     const { id } = req.query;
     if (!id || !ObjectId.isValid(id)) {
         return res.status(400).json({ error: 'Invalid project ID' });
