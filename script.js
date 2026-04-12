@@ -4,12 +4,12 @@
     function initSmoothScroll() {
         if (window.innerWidth > 1024 && typeof Lenis !== 'undefined') {
             lenis = new Lenis({
-                duration: 1.5,
+                duration: 1.2,
                 easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                 orientation: 'vertical',
                 gestureOrientation: 'vertical',
                 smoothWheel: true,
-                wheelMultiplier: 0.8,
+                wheelMultiplier: 1,
                 smoothTouch: false,
                 touchMultiplier: 2,
                 infinite: false,
@@ -35,39 +35,6 @@
                     if (lenis) lenis.start();
                 }
             }, true);
-            let isScrolling = false;
-            let currentSectionIndex = 0;
-            const sections = document.querySelectorAll('.section');
-            let wheelTimeout;
-            window.addEventListener('wheel', (e) => {
-                const terminalBody = e.target.closest('.terminal-body');
-                if (terminalBody) {
-                    return;
-                }
-                if (isScrolling) {
-                    e.preventDefault();
-                    return;
-                }
-                clearTimeout(wheelTimeout);
-                wheelTimeout = setTimeout(() => {
-                    const direction = e.deltaY > 0 ? 1 : -1;
-                    let targetIndex = currentSectionIndex + direction;
-                    targetIndex = Math.max(0, Math.min(sections.length - 1, targetIndex));
-                    if (targetIndex !== currentSectionIndex) {
-                        isScrolling = true;
-                        currentSectionIndex = targetIndex;
-                        lenis.scrollTo(sections[targetIndex], {
-                            offset: 0,
-                            duration: 1.5,
-                            onComplete: () => {
-                                setTimeout(() => {
-                                    isScrolling = false;
-                                }, 2000);
-                            }
-                        });
-                    }
-                }, 50);
-            }, { passive: false });
         } else if (typeof Lenis === 'undefined') {
             console.warn('⚠️ Lenis library not loaded');
         }
