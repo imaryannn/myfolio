@@ -2,11 +2,6 @@
   "name": "myfolio",
   "version": "1.0.0",
   "description": "Aryan's Portfolio with Admin Panel",
-  "main": "index.html",
-  "scripts": {
-    "start": "node server.js",
-    "build": "echo 'Build complete'"
-  },
   "dependencies": {
     "mongodb": "^6.3.0",
     "jsonwebtoken": "^9.0.2",
