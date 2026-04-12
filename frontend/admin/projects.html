@@ -83,7 +83,7 @@
             if (!confirm('This will reset all data. Continue?')) return;
             
             try {
-                const res = await fetch('${API_BASE_URL}/api/seed', { method: 'POST' });
+                const res = await fetch(`${API_BASE_URL}/api/seed', { method: 'POST' });
                 const data = await res.json();
                 alert(data.message || 'Database seeded!');
                 loadProjects();
@@ -136,7 +136,7 @@
             try {
                 const token = localStorage.getItem('adminToken');
                 const id = document.getElementById('projectId').value;
-                const url = editMode ? `${API_BASE_URL}/api/projects/${id}` : '${API_BASE_URL}/api/projects';
+                const url = editMode ? `${API_BASE_URL}/api/projects/${id}` : `${API_BASE_URL}/api/projects';
                 const method = editMode ? 'PUT' : 'POST';
                 
                 const res = await fetch(url, {
@@ -164,7 +164,7 @@
         
         async function loadProjects() {
             try {
-                const res = await fetch('${API_BASE_URL}/api/projects');
+                const res = await fetch(`${API_BASE_URL}/api/projects');
                 const data = await res.json();
                 
                 const list = document.getElementById('projectsList');
