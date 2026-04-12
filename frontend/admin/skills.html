@@ -46,7 +46,7 @@
         
         async function loadSkills() {
             try {
-                const res = await fetch(`${API_BASE_URL}/api/skills');
+                const res = await fetch(`${API_BASE_URL}/api/skills`);
                 const data = await res.json();
                 
                 skillsData = data.skills || [];
@@ -128,7 +128,7 @@
         document.getElementById('saveSkillsBtn').addEventListener('click', async () => {
             try {
                 const token = localStorage.getItem('adminToken');
-                const res = await fetch(`${API_BASE_URL}/api/skills', {
+                const res = await fetch(`${API_BASE_URL}/api/skills`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

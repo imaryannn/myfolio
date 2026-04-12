@@ -109,9 +109,9 @@
         async function loadStats() {
             try {
                 const [projectsRes, skillsRes, statusRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/projects'),
-                    fetch(`${API_BASE_URL}/api/skills'),
-                    fetch(`${API_BASE_URL}/api/status')
+                    fetch(`${API_BASE_URL}/api/projects`),
+                    fetch(`${API_BASE_URL}/api/skills`),
+                    fetch(`${API_BASE_URL}/api/status`)
                 ]);
 
                 const projectsData = await projectsRes.json();
@@ -154,7 +154,7 @@
             
             try {
                 const token = localStorage.getItem('adminToken');
-                await fetch(`${API_BASE_URL}/api/status', {
+                await fetch(`${API_BASE_URL}/api/status`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

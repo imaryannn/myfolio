@@ -81,7 +81,7 @@
     <script>
         async function loadProfile() {
             try {
-                const res = await fetch(`${API_BASE_URL}/api/profile');
+                const res = await fetch(`${API_BASE_URL}/api/profile`);
                 const data = await res.json();
                 
                 if (!data.profile) {
@@ -123,7 +123,7 @@
             
             try {
                 const token = localStorage.getItem('adminToken');
-                const res = await fetch(`${API_BASE_URL}/api/profile', {
+                const res = await fetch(`${API_BASE_URL}/api/profile`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
