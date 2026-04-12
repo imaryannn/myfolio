@@ -4,16 +4,56 @@
     {
       "src": "api/**/*.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "."
+      }
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/auth/login",
+      "dest": "/api/auth/login.js"
     },
     {
-      "src": "/(.*)",
+      "src": "/api/auth/register",
+      "dest": "/api/auth/register.js"
+    },
+    {
+      "src": "/api/projects",
+      "methods": ["GET", "POST"],
+      "dest": "/api/projects/index.js"
+    },
+    {
+      "src": "/api/projects/(.*)",
+      "dest": "/api/projects/[id].js"
+    },
+    {
+      "src": "/api/skills",
+      "dest": "/api/skills/index.js"
+    },
+    {
+      "src": "/api/profile",
+      "dest": "/api/profile/index.js"
+    },
+    {
+      "src": "/api/status",
+      "dest": "/api/status/index.js"
+    },
+    {
+      "src": "/(.*\\.(css|js|html|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
       "dest": "/$1"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "/admin/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
     }
   ]
 }

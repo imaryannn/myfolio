@@ -4,7 +4,8 @@
   "description": "Aryan's Portfolio with Admin Panel",
   "main": "index.html",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo 'Build complete'"
   },
   "dependencies": {
     "mongodb": "^6.3.0",
