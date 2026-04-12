@@ -1,5 +1,0 @@
-{
-  "version": 2,
-  "buildCommand": "mkdir -p public && cp index.html style.css script.js lenis.min.js public/ && cp -r admin public/",
-  "outputDirectory": "public"
-}
