@@ -6,49 +6,37 @@ const path = require('path');
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
 let db;
 const client = new MongoClient(process.env.MONGODB_URI);
-
 client.connect().then(() => {
   db = client.db('portfolio');
   console.log('Connected to MongoDB');
 }).catch(err => console.error('MongoDB connection error:', err));
-
 const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname;
-  
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
     return;
   }
-
   let body = '';
   req.on('data', chunk => body += chunk);
   req.on('end', async () => {
     try {
       if (body) body = JSON.parse(body);
-      
-      // Login endpoint
       if (pathname === '/api/auth/login' && req.method === 'POST') {
         const { email, password } = body;
-        
         const user = await db.collection('users').findOne({ email });
-        
         if (!user || !(await bcrypt.compare(password, user.password))) {
           res.writeHead(401, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: false, error: 'Invalid credentials' }));
           return;
         }
-        
         const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
-        
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ 
           success: true, 
@@ -57,18 +45,14 @@ const server = http.createServer(async (req, res) => {
         }));
         return;
       }
-      
-      // Register endpoint
       if (pathname === '/api/auth/register' && req.method === 'POST') {
         const { email, password, name } = body;
-        
         const existing = await db.collection('users').findOne({ email });
         if (existing) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: false, error: 'User already exists' }));
           return;
         }
-        
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await db.collection('users').insertOne({
           email,
@@ -76,13 +60,10 @@ const server = http.createServer(async (req, res) => {
           name,
           createdAt: new Date()
         });
-        
         res.writeHead(201, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, message: 'User created' }));
         return;
       }
-      
-      // Delete user (for testing)
       if (pathname === '/api/auth/delete-user' && req.method === 'POST') {
         const { email } = body;
         await db.collection('users').deleteOne({ email });
@@ -90,28 +71,21 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ success: true, message: 'User deleted' }));
         return;
       }
-      
-      // Get all projects
       if (pathname === '/api/projects' && req.method === 'GET') {
         const projects = await db.collection('projects').find().toArray();
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, projects }));
         return;
       }
-      
-      // Create project
       if (pathname === '/api/projects' && req.method === 'POST') {
         const result = await db.collection('projects').insertOne({
           ...body,
           createdAt: new Date()
         });
-        
         res.writeHead(201, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, id: result.insertedId }));
         return;
       }
-      
-      // Update project
       if (pathname.startsWith('/api/projects/') && req.method === 'PUT') {
         const id = pathname.split('/')[3];
         await db.collection('projects').updateOne(
@@ -122,8 +96,6 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ success: true }));
         return;
       }
-      
-      // Delete project
       if (pathname.startsWith('/api/projects/') && req.method === 'DELETE') {
         const id = pathname.split('/')[3];
         await db.collection('projects').deleteOne({ _id: new ObjectId(id) });
@@ -131,16 +103,12 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ success: true }));
         return;
       }
-      
-      // Get all skills
       if (pathname === '/api/skills' && req.method === 'GET') {
         const skills = await db.collection('skills').find().toArray();
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, skills }));
         return;
       }
-      
-      // Update skills
       if (pathname === '/api/skills' && req.method === 'PUT') {
         await db.collection('skills').deleteMany({});
         if (body.skills && body.skills.length > 0) {
@@ -150,16 +118,12 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ success: true }));
         return;
       }
-      
-      // Get profile
       if (pathname === '/api/profile' && req.method === 'GET') {
         const profile = await db.collection('profile').findOne({});
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, profile }));
         return;
       }
-      
-      // Update profile
       if (pathname === '/api/profile' && req.method === 'PUT') {
         await db.collection('profile').deleteMany({});
         await db.collection('profile').insertOne(body);
@@ -167,8 +131,6 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ success: true }));
         return;
       }
-      
-      // Update status
       if (pathname === '/api/status' && req.method === 'PUT') {
         await db.collection('status').deleteMany({});
         await db.collection('status').insertOne({ online: body.online });
@@ -176,18 +138,13 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify({ success: true }));
         return;
       }
-      
-      // Get status
       if (pathname === '/api/status' && req.method === 'GET') {
         const status = await db.collection('status').findOne({});
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, online: status?.online !== false }));
         return;
       }
-      
-      // Seed initial data
       if (pathname === '/api/seed' && req.method === 'POST') {
-        // Seed projects from index.html
         const projects = [
           {
             name: 'ZyroMeet',
@@ -230,8 +187,6 @@ const server = http.createServer(async (req, res) => {
             createdAt: new Date()
           }
         ];
-        
-        // Seed skills
         const skills = [
           {
             category: 'Frontend Logic',
@@ -258,8 +213,6 @@ const server = http.createServer(async (req, res) => {
             ]
           }
         ];
-        
-        // Seed profile
         const profile = {
           hero: {
             title: 'ARYAN',
@@ -275,27 +228,21 @@ const server = http.createServer(async (req, res) => {
             linkedin: 'https://www.linkedin.com/in/aryan-2064153a0/'
           }
         };
-        
         await db.collection('projects').deleteMany({});
         await db.collection('skills').deleteMany({});
         await db.collection('profile').deleteMany({});
-        
         await db.collection('projects').insertMany(projects);
         await db.collection('skills').insertMany(skills);
         await db.collection('profile').insertOne(profile);
-        
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, message: 'Database seeded successfully' }));
         return;
       }
-      
-      // Test route
       if (pathname === '/api/test') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'API is working', db: db ? 'connected' : 'disconnected' }));
         return;
       }
-
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Not found' }));
     } catch (error) {
@@ -305,7 +252,6 @@ const server = http.createServer(async (req, res) => {
     }
   });
 });
-
 const PORT = 3001;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

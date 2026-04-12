@@ -1,17 +1,7 @@
-/* ========================================
-   ARYAN — Frontier Redesign | JS Engine
-   ======================================== */
-
 (function () {
     'use strict';
-
-    // ============================
-    // SMOOTH SCROLL (Desktop Only)
-    // ============================
     let lenis = null;
-    
     function initSmoothScroll() {
-        // Only enable on desktop (width > 1024px)
         if (window.innerWidth > 1024 && typeof Lenis !== 'undefined') {
             lenis = new Lenis({
                 duration: 1.5,
@@ -24,7 +14,6 @@
                 touchMultiplier: 2,
                 infinite: false,
             });
-
             function raf(time) {
                 if (lenis) {
                     lenis.raf(time);
@@ -32,58 +21,41 @@
                 }
             }
             requestAnimationFrame(raf);
-
             console.log('✅ Lenis Smooth Scroll Enabled');
-            
-            // Disable Lenis when hovering/interacting with terminal
             let terminalActive = false;
-            
             document.addEventListener('mouseenter', (e) => {
                 if (e.target.closest('.hero-right .terminal-body')) {
                     terminalActive = true;
                     if (lenis) lenis.stop();
                 }
             }, true);
-            
             document.addEventListener('mouseleave', (e) => {
                 if (e.target.closest('.hero-right .terminal-body')) {
                     terminalActive = false;
                     if (lenis) lenis.start();
                 }
             }, true);
-            
-            // Full-page section scroll with long pause
             let isScrolling = false;
             let currentSectionIndex = 0;
             const sections = document.querySelectorAll('.section');
-            
-            // Disable default Lenis wheel handling for manual control
             let wheelTimeout;
             window.addEventListener('wheel', (e) => {
-                // Check if scrolling inside terminal
                 const terminalBody = e.target.closest('.terminal-body');
                 if (terminalBody) {
-                    // Allow native scroll in terminal, don't trigger page scroll
                     return;
                 }
-                
                 if (isScrolling) {
                     e.preventDefault();
                     return;
                 }
-                
                 clearTimeout(wheelTimeout);
                 wheelTimeout = setTimeout(() => {
                     const direction = e.deltaY > 0 ? 1 : -1;
-                    
-                    // Calculate target section
                     let targetIndex = currentSectionIndex + direction;
                     targetIndex = Math.max(0, Math.min(sections.length - 1, targetIndex));
-                    
                     if (targetIndex !== currentSectionIndex) {
                         isScrolling = true;
                         currentSectionIndex = targetIndex;
-                        
                         lenis.scrollTo(sections[targetIndex], {
                             offset: 0,
                             duration: 1.5,
@@ -96,16 +68,11 @@
                     }
                 }, 50);
             }, { passive: false });
-            
         } else if (typeof Lenis === 'undefined') {
             console.warn('⚠️ Lenis library not loaded');
         }
     }
-
-    // Initialize smooth scroll
     initSmoothScroll();
-
-    // Reinitialize on resize if crossing the threshold
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
@@ -118,10 +85,6 @@
             }
         }, 250);
     });
-
-    // ============================
-    // NAVIGATION SHRINK
-    // ============================
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
@@ -130,37 +93,26 @@
             navbar.classList.remove('scrolled');
         }
     }, { passive: true });
-
-    // ============================
-    // MOBILE NAV
-    // ============================
     const navToggle = document.getElementById('nav-toggle');
     const mobileNav = document.getElementById('mobile-nav');
     const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Clone nav links to mobile menu
     if (mobileNav && navLinks.length > 0) {
         navLinks.forEach(link => {
             const clone = link.cloneNode(true);
             mobileNav.appendChild(clone);
         });
     }
-    
     if (navToggle && mobileNav) {
         navToggle.addEventListener('click', () => {
             navToggle.classList.toggle('active');
             mobileNav.classList.toggle('active');
         });
-        
-        // Close menu when clicking a link
         mobileNav.addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {
                 navToggle.classList.remove('active');
                 mobileNav.classList.remove('active');
             }
         });
-        
-        // Close menu when clicking outside
         document.addEventListener('click', (e) => {
             if (!navToggle.contains(e.target) && !mobileNav.contains(e.target)) {
                 navToggle.classList.remove('active');
@@ -168,10 +120,6 @@
             }
         });
     }
-
-    // ============================
-    // GSAP LOGIC
-    // ============================
     function initAnimations() {
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
             document.querySelectorAll('[data-reveal]').forEach(el => {
@@ -180,10 +128,7 @@
             });
             return;
         }
-
         gsap.registerPlugin(ScrollTrigger);
-
-        // Sync Lenis with GSAP ScrollTrigger
         if (lenis) {
             lenis.on('scroll', ScrollTrigger.update);
             gsap.ticker.add((time) => {
@@ -193,18 +138,10 @@
             });
             gsap.ticker.lagSmoothing(0);
         }
-
-        // Grid texture scales and shifts slowly (Removed since bg is removed)
-
-        // Floating Rock (Removed)
-        // Floating Cache (Removed)
-
-        // --- Content Reveals ---
         const reveals = gsap.utils.toArray('[data-reveal]');
         reveals.forEach(el => {
             const direction = el.getAttribute('data-reveal');
             const delay = parseFloat(el.getAttribute('data-delay')) || 0;
-
             const toVars = {
                 opacity: 1, y: 0, x: 0,
                 duration: 1, delay,
@@ -221,14 +158,8 @@
             el.style.opacity = '0';
             gsap.to(el, toVars);
         });
-
-        // ================================
-        // PARALLAX LAYERS (Desktop Only)
-        // ================================
         const isDesktop = window.innerWidth > 1024;
-
         if (isDesktop) {
-            // Global grid subtle movement
             gsap.to('.global-grid', {
                 backgroundPosition: '0px 400px',
                 ease: 'none',
@@ -239,8 +170,6 @@
                     scrub: 3
                 }
             });
-
-            // Hero terminal floats up slower
             gsap.to('.hero-right', {
                 yPercent: -35,
                 ease: 'none',
@@ -251,8 +180,6 @@
                     scrub: 2
                 }
             });
-
-            // Hero left content moves slower
             gsap.to('.hero-left', {
                 yPercent: -15,
                 ease: 'none',
@@ -264,8 +191,6 @@
                 }
             });
         }
-
-        // Section headings drift up slower than scroll
         gsap.utils.toArray('.section-heading').forEach(el => {
             gsap.to(el, {
                 yPercent: isDesktop ? -25 : -5,
@@ -278,8 +203,6 @@
                 }
             });
         });
-
-        // Section labels drift up slightly faster
         gsap.utils.toArray('.section-label').forEach(el => {
             gsap.to(el, {
                 yPercent: isDesktop ? -40 : -8,
@@ -292,8 +215,6 @@
                 }
             });
         });
-
-        // About wireframe cube spins + drifts
         const cube = document.querySelector('.wireframe-cube');
         if (cube) {
             gsap.to(cube, {
@@ -310,39 +231,6 @@
                 }
             });
         }
-
-        // Project rows - removed parallax effect
-        // gsap.utils.toArray('.project-row').forEach((row, i) => {
-        //     gsap.to(row, {
-        //         yPercent: isDesktop ? -15 * (i % 2 === 0 ? 1 : 1.5) : -3,
-        //         ease: 'none',
-        //         scrollTrigger: {
-        //             trigger: row,
-        //             start: 'top bottom',
-        //             end: 'bottom top',
-        //             scrub: isDesktop ? 1.5 : 0.5
-        //         }
-        //     });
-        // });
-
-        // Terminal wires in projects - removed parallax effect
-        // if (isDesktop) {
-        //     gsap.utils.toArray('.project-media .terminal-wire').forEach((terminal, i) => {
-        //         gsap.to(terminal, {
-        //             y: -40,
-        //             rotation: i % 2 === 0 ? 1 : -1,
-        //             ease: 'none',
-        //             scrollTrigger: {
-        //                 trigger: terminal.closest('.project-row'),
-        //                 start: 'top bottom',
-        //                 end: 'bottom top',
-        //                 scrub: 2.5
-        //             }
-        //         });
-        //     });
-        // }
-
-        // Skill groups float upward
         gsap.utils.toArray('.skill-group').forEach((el, i) => {
             gsap.to(el, {
                 yPercent: isDesktop ? -15 - i * 5 : -5,
@@ -355,8 +243,6 @@
                 }
             });
         });
-
-        // Contact box drifts up
         gsap.to('.contact-box', {
             yPercent: isDesktop ? -20 : -5,
             scale: isDesktop ? 1.02 : 1,
@@ -368,13 +254,8 @@
                 scrub: isDesktop ? 1.5 : 0.5
             }
         });
-
-        // --- Skill Bars Animate ---
         gsap.utils.toArray('.bar::after').forEach(bar => {
-            // Note: pseudo-elements can't be easily animated directly by JS without CSS var injection or class toggle.
-            // Using a class toggle approach.
         });
-        
         const skillGroups = gsap.utils.toArray('.skill-group');
         skillGroups.forEach(group => {
             ScrollTrigger.create({
@@ -383,8 +264,6 @@
                 onEnter: () => group.classList.add('animate-bars')
             });
         });
-        
-        // Manually inject style to run animation on entering
         const style = document.createElement('style');
         style.textContent = `
             .skill-group.animate-bars .bar-fill {
@@ -400,20 +279,12 @@
         `;
         document.head.appendChild(style);
     }
-
-    // Call on load
     window.addEventListener('load', () => {
-        // Wait minor delay for image loads
         setTimeout(initAnimations, 100);
     });
-
-    // ============================
-    // HERO TERMINAL — TYPEWRITER
-    // ============================
     const heroForm = document.getElementById('hero-terminal-form');
     const heroInput = document.getElementById('hero-term-input');
     const heroBody = document.getElementById('hero-terminal-body');
-
     const bootLines = [
         { text: 'ARYAN_CORE.EXE [Version 1.0.0]', color: '', delay: 0 },
         { text: '(c) Aryan Corp. All rights reserved.', color: 'var(--text-muted)', delay: 600 },
@@ -429,7 +300,6 @@
         { text: '', color: '', delay: 7000 },
         { text: 'Type "help" to interact...', color: 'var(--text-muted)', delay: 7500 },
     ];
-
     function typeLine(lineEl, text, speed = 30, cb) {
         let i = 0;
         lineEl.textContent = '';
@@ -443,13 +313,10 @@
             }
         }, speed);
     }
-
     function runBoot() {
         let queue = [...bootLines];
-
         function next() {
             if (!queue.length) {
-                // Reveal interactive input
                 heroForm.style.display = 'flex';
                 heroInput.focus();
                 return;
@@ -460,7 +327,6 @@
                 span.className = 'term-line';
                 if (line.color) span.style.color = line.color;
                 heroForm.before(span);
-
                 if (line.text === '') {
                     span.innerHTML = '&nbsp;';
                     next();
@@ -469,22 +335,18 @@
                 }
             }, queue.length === bootLines.length - 1 ? line.delay : 0);
         }
-
-        // Sequential with delays between lines
         bootLines.forEach((line, idx) => {
             setTimeout(() => {
                 const span = document.createElement('span');
                 span.className = 'term-line';
                 if (line.color) span.style.color = line.color;
                 heroForm.before(span);
-
                 if (line.text === '') {
                     span.innerHTML = '&nbsp;';
                 } else {
                     typeLine(span, line.text, 22);
                 }
                 heroBody.scrollTop = heroBody.scrollHeight;
-
                 if (idx === bootLines.length - 1) {
                     setTimeout(() => {
                         heroForm.style.display = 'flex';
@@ -494,29 +356,23 @@
             }, line.delay);
         });
     }
-
     if (heroBody) {
         setTimeout(runBoot, 600);
     }
-
     if (heroForm) {
         heroBody.addEventListener('click', () => heroInput.focus());
-
         heroForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const val = heroInput.value.trim().toLowerCase();
             if (!val) return;
-
             const echo = document.createElement('span');
             echo.className = 'term-line';
             echo.style.color = 'var(--accent-copper)';
             echo.textContent = 'C:\\Users\\Aryan> ' + val;
             heroForm.before(echo);
-
             const response = document.createElement('span');
             response.className = 'term-line';
             response.style.color = 'var(--accent-cyan)';
-
             switch(val) {
                 case 'help':
                     response.textContent = 'commands: help, about, skills, projects, clear, whoami, sudo';
@@ -544,35 +400,26 @@
                     response.textContent = `'${val}' is not recognized. Type 'help'.`;
                     response.style.color = 'var(--text-muted)';
             }
-
             heroForm.before(response);
             heroInput.value = '';
             heroBody.scrollTop = heroBody.scrollHeight;
         });
     }
-
-    // ============================
-    // FORM SUBMISSION — Web3Forms
-    // ============================
     const form = document.getElementById('contact-form');
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = form.querySelector('button[type="submit"]');
             const status = form.querySelector('.form-status');
-
             btn.innerHTML = 'Transmitting... [████████  ] 80%';
             btn.style.pointerEvents = 'none';
-
             const data = new FormData(form);
-
             try {
                 const res = await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
                     body: data
                 });
                 const json = await res.json();
-
                 if (json.success) {
                     btn.innerHTML = 'Transmit Buffer';
                     btn.style.pointerEvents = 'auto';
@@ -590,26 +437,17 @@
                 status.style.color = 'var(--accent-red)';
                 status.classList.add('active');
             }
-
             setTimeout(() => {
                 status.classList.remove('active');
                 status.style.color = '';
             }, 4000);
         });
     }
-
 })();
-
-
-// ============================
-// LOAD DYNAMIC DATA FROM API
-// ============================
 async function loadDynamicContent() {
     try {
-        // Load projects
         const projectsRes = await fetch('http://localhost:3001/api/projects');
         const projectsData = await projectsRes.json();
-        
         if (projectsData.success && projectsData.projects) {
             const projectList = document.querySelector('.project-list');
             projectList.innerHTML = projectsData.projects.map((p, i) => `
@@ -637,11 +475,8 @@ async function loadDynamicContent() {
                 </article>
             `).join('');
         }
-        
-        // Load skills
         const skillsRes = await fetch('http://localhost:3001/api/skills');
         const skillsData = await skillsRes.json();
-        
         if (skillsData.success && skillsData.skills) {
             const skillsWrapper = document.querySelector('.skills-wrapper');
             skillsWrapper.innerHTML = skillsData.skills.map((s, i) => `
@@ -655,34 +490,24 @@ async function loadDynamicContent() {
                 </div>
             `).join('');
         }
-        
-        // Load profile
         const profileRes = await fetch('http://localhost:3001/api/profile');
         const profileData = await profileRes.json();
-        
         if (profileData.success && profileData.profile) {
             const p = profileData.profile;
-            
-            // Update hero
             if (p.hero) {
                 const heroTitle = document.querySelector('.hero-title');
                 const heroSubtitle = document.querySelector('.hero-subtitle');
                 const heroDesc = document.querySelector('.hero-desc');
-                
                 if (heroTitle) heroTitle.textContent = p.hero.title || 'ARYAN';
                 if (heroSubtitle) heroSubtitle.textContent = '// ' + (p.hero.subtitle || 'Full Stack Developer');
                 if (heroDesc) heroDesc.textContent = p.hero.description || '';
             }
-            
-            // Update about
             if (p.about) {
                 const aboutText = document.querySelector('.about-text');
                 if (aboutText) {
                     aboutText.innerHTML = `<p>${p.about.text}</p><a href="#contact" class="btn-link mt-8">Connect Securely -></a>`;
                 }
             }
-            
-            // Update footer links
             if (p.contact) {
                 const footerLinks = document.querySelector('.footer-links');
                 if (footerLinks) {
@@ -693,11 +518,8 @@ async function loadDynamicContent() {
                 }
             }
         }
-        
-        // Load status
         const statusRes = await fetch('http://localhost:3001/api/status');
         const statusData = await statusRes.json();
-        
         if (statusData.success) {
             const statusElement = document.querySelector('.footer-inner > div:last-child');
             if (statusElement) {
@@ -706,13 +528,10 @@ async function loadDynamicContent() {
                 statusElement.style.color = isOnline ? '#27c93f' : 'var(--accent-red)';
             }
         }
-        
     } catch (error) {
         console.error('Error loading dynamic content:', error);
     }
 }
-
-// Load content on page load
 if (window.location.pathname === '/' || window.location.pathname.includes('index.html')) {
     loadDynamicContent();
 }

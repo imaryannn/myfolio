@@ -76,7 +76,7 @@
     <script>
         let editMode = false;
         
-        // Seed database
+        
         document.getElementById('seedBtn').addEventListener('click', async () => {
             if (!confirm('This will reset all data. Continue?')) return;
             
@@ -90,7 +90,7 @@
             }
         });
         
-        // Cancel edit
+        
         document.getElementById('cancelBtn').addEventListener('click', () => {
             resetForm();
         });
@@ -119,7 +119,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         
-        // Create/Update project
+        
         document.getElementById('projectForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);

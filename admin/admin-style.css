@@ -1,4 +1,3 @@
-/* Admin Panel Styles */
 #admin-nav {
     position: fixed;
     top: 0;
@@ -13,26 +12,22 @@
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-chrome);
 }
-
 #admin-nav .nav-links {
     display: flex;
     align-items: center;
     gap: 2rem;
     padding-top: 0.3rem;
 }
-
 .admin-main {
     padding-top: 120px;
     min-height: 100vh;
 }
-
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     margin-bottom: 4rem;
 }
-
 .stat-card {
     background: var(--bg-card);
     border: 1px solid var(--border-chrome);
@@ -40,12 +35,10 @@
     text-align: center;
     transition: 0.3s;
 }
-
 .stat-card:hover {
     border-color: var(--accent-copper);
     transform: translateY(-5px);
 }
-
 .stat-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
@@ -53,27 +46,23 @@
     align-items: center;
     justify-content: center;
 }
-
 .stat-value {
     font-family: var(--font-heading);
     font-size: 2.5rem;
     color: var(--accent-cyan);
     margin-bottom: 0.5rem;
 }
-
 .stat-label {
     font-family: var(--font-mono);
     font-size: 0.9rem;
     color: var(--text-muted);
     text-transform: uppercase;
 }
-
 .action-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
 }
-
 .action-card {
     background: var(--bg-card);
     border: 1px solid var(--border-chrome);
@@ -86,38 +75,32 @@
     font-family: var(--font-mono);
     color: var(--text-primary);
 }
-
 .action-card:hover {
     border-color: var(--accent-cyan);
     background: rgba(0, 240, 255, 0.05);
 }
-
 .action-icon {
     font-size: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .form-container {
     background: var(--bg-card);
     border: 1px solid var(--border-chrome);
     padding: 3rem;
     margin-bottom: 2rem;
 }
-
 .form-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
     margin-bottom: 1.5rem;
 }
-
 .form-field {
     display: flex;
     flex-direction: column;
 }
-
 .form-field label {
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -125,7 +108,6 @@
     margin-bottom: 0.5rem;
     text-transform: uppercase;
 }
-
 .form-field input,
 .form-field textarea,
 .form-field select {
@@ -136,7 +118,6 @@
     color: #fff;
     transition: 0.3s;
 }
-
 .form-field input:focus,
 .form-field textarea:focus,
 .form-field select:focus {
@@ -144,19 +125,16 @@
     border-color: var(--accent-copper);
     background: rgba(255, 110, 39, 0.05);
 }
-
 .form-field textarea {
     min-height: 100px;
     resize: vertical;
 }
-
 .tech-stack-input {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     margin-top: 0.5rem;
 }
-
 .tech-tag {
     background: rgba(0, 240, 255, 0.1);
     border: 1px solid var(--accent-cyan);
@@ -168,7 +146,6 @@
     align-items: center;
     gap: 0.5rem;
 }
-
 .tech-tag button {
     background: none;
     border: none;
@@ -176,13 +153,11 @@
     cursor: pointer;
     font-size: 1rem;
 }
-
 .projects-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
-
 .project-item {
     background: var(--bg-card);
     border: 1px solid var(--border-chrome);
@@ -192,19 +167,16 @@
     align-items: flex-start;
     gap: 2rem;
 }
-
 .project-item h3 {
     font-family: var(--font-heading);
     font-size: 1.5rem;
     color: var(--accent-copper);
     margin-bottom: 0.5rem;
 }
-
 .project-item p {
     color: var(--text-secondary);
     margin-bottom: 1rem;
 }
-
 .project-meta {
     display: flex;
     gap: 1rem;
@@ -212,80 +184,66 @@
     font-size: 0.8rem;
     color: var(--text-muted);
 }
-
 .skill-item {
     background: var(--bg-card);
     border: 1px solid var(--border-chrome);
     padding: 2rem;
     margin-bottom: 1.5rem;
 }
-
 .skill-item h3 {
     font-family: var(--font-heading);
     font-size: 1.3rem;
     color: var(--accent-cyan);
     margin-bottom: 1rem;
 }
-
 .skill-item ul {
     list-style: none;
     padding: 0;
 }
-
 .skill-item li {
     color: var(--text-secondary);
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-
 .profile-display {
     background: var(--bg-card);
     border: 1px solid var(--border-chrome);
     padding: 2rem;
 }
-
 .profile-display h3 {
     font-family: var(--font-heading);
     font-size: 1.3rem;
     color: var(--accent-copper);
     margin-bottom: 1rem;
 }
-
 .profile-display p {
     color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
-
 .profile-display strong {
     color: var(--text-primary);
 }
-
 .project-info h3 {
     font-family: var(--font-heading);
     font-size: 1.5rem;
     color: var(--accent-copper);
     margin-bottom: 0.5rem;
 }
-
 .project-info p {
     color: var(--text-secondary);
     margin-bottom: 1rem;
 }
-
 .admin-content {
     margin-top: 2rem;
 }
-
 .project-actions {
     display: flex;
     gap: 1rem;
 }
-
 .btn-small {
     padding: 0.5rem 1rem;
     font-size: 0.75rem;
 }
-
 .success-msg,
 .error-msg {
     font-family: var(--font-mono);
@@ -294,37 +252,30 @@
     border: 1px solid;
     display: none;
 }
-
 .success-msg {
     color: #27c93f;
     border-color: #27c93f;
     background: rgba(39, 201, 63, 0.1);
 }
-
 .error-msg {
     color: var(--accent-red);
     border-color: var(--accent-red);
     background: rgba(255, 51, 51, 0.1);
 }
-
 .success-msg.active,
 .error-msg.active {
     display: block;
 }
-
 @media (max-width: 768px) {
     .admin-main {
         padding-top: 100px;
     }
-    
     #admin-nav .nav-links {
         display: none;
     }
-    
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    
     .project-item {
         grid-template-columns: 1fr;
     }
