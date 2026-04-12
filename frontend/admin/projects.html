@@ -129,8 +129,8 @@
                 name: formData.get('name'),
                 category: formData.get('category'),
                 description: formData.get('description'),
-                tech: formData.get('tech').split(',').map(t => t.trim()),
-                url: formData.get('url')
+                techStack: formData.get('tech').split(',').map(t => t.trim()),
+                link: formData.get('url')
             };
             
             try {
@@ -181,12 +181,12 @@
                             <p style="color: var(--accent-cyan); font-size: 0.85rem; margin-bottom: 0.5rem;">${p.category}</p>
                             <p>${p.description}</p>
                             <div class="project-meta">
-                                <span>Tech: ${p.tech?.join(', ')}</span>
+                                <span>Tech: ${p.techStack?.join(', ') || 'N/A'}</span>
                             </div>
-                            <a href="${p.url}" target="_blank" style="color: var(--accent-cyan); font-size: 0.85rem; margin-top: 0.5rem; display: inline-block;">View Project →</a>
+                            <a href="${p.link}" target="_blank" style="color: var(--accent-cyan); font-size: 0.85rem; margin-top: 0.5rem; display: inline-block;">View Project →</a>
                         </div>
                         <div style="display: flex; gap: 0.5rem; flex-direction: column;">
-                            <button onclick='editProject("${p._id}", "${p.name.replace(/"/g, '&quot;')}", "${p.category}", "${p.description.replace(/"/g, '&quot;')}", ${JSON.stringify(p.tech)}, "${p.url}")' class="btn btn-outline btn-small">Edit</button>
+                            <button onclick='editProject("${p._id}", "${p.name.replace(/"/g, '&quot;')}", "${p.category}", "${p.description.replace(/"/g, '&quot;')}", ${JSON.stringify(p.techStack || [])}, "${p.link || ''}")' class="btn btn-outline btn-small">Edit</button>
                             <button onclick="deleteProject('${p._id}')" class="btn btn-outline btn-small" style="background: rgba(255,51,51,0.1); border-color: var(--accent-red); color: var(--accent-red);">Delete</button>
                         </div>
                     </div>
