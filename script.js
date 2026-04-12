@@ -39,14 +39,14 @@
             let terminalActive = false;
             
             document.addEventListener('mouseenter', (e) => {
-                if (e.target.closest('.terminal-body')) {
+                if (e.target.closest('.hero-right .terminal-body')) {
                     terminalActive = true;
                     if (lenis) lenis.stop();
                 }
             }, true);
             
             document.addEventListener('mouseleave', (e) => {
-                if (e.target.closest('.terminal-body')) {
+                if (e.target.closest('.hero-right .terminal-body')) {
                     terminalActive = false;
                     if (lenis) lenis.start();
                 }
