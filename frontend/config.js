@@ -1,1 +1,1 @@
-const API_BASE_URL = 'YOUR_BACKEND_URL_HERE';
+const API_BASE_URL = 'https://backendaryanfolio.vercel.app';
