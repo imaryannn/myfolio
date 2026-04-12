@@ -1,4 +1,3 @@
 {
-  "buildCommand": "mkdir -p public && cp index.html style.css script.js public/ && cp -r admin public/",
-  "outputDirectory": "public"
+  "cleanUrls": true
 }
