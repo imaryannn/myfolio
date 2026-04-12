@@ -1,10 +1,7 @@
 {
   "name": "myfolio",
   "version": "1.0.0",
-  "description": "Aryan's Portfolio with Admin Panel",
-  "scripts": {
-    "start": "node server.js"
-  },
+  "description": "Aryan's Portfolio Backend API",
   "dependencies": {
     "mongodb": "^6.3.0",
     "jsonwebtoken": "^9.0.2",
