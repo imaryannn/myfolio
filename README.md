@@ -1,6 +1,6 @@
 # ARYAN — Portfolio
 
-A modern, cyberpunk-themed developer portfolio with real-time admin panel and dynamic content management.
+A modern, cyberpunk-themed developer portfolio with admin panel and dynamic content management.
 
 ## 🚀 Live Demo
 
