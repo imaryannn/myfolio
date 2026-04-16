@@ -1,8 +1,28 @@
-function checkAuth() {
+async function checkAuth() {
     const token = localStorage.getItem('adminToken');
     if (!token && !window.location.pathname.includes('login.html')) {
         window.location.href = '/admin/login.html';
         return false;
+    }
+    if (token && !window.location.pathname.includes('login.html')) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminUser');
+                window.location.href = '/admin/login.html';
+                return false;
+            }
+        } catch (error) {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            window.location.href = '/admin/login.html';
+            return false;
+        }
     }
     return true;
 }
