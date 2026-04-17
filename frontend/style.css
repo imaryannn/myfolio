@@ -344,6 +344,73 @@ button {
 .project-row {
     will-change: transform;
 }
+.skills-liquid-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+.liquid-skill {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--border-chrome);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+.liquid-skill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 120%, rgba(0, 240, 255, 0.15), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.liquid-skill:hover::before {
+    opacity: 1;
+}
+.liquid-skill:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 10px 40px rgba(0, 240, 255, 0.2);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+}
+.liquid-skill svg,
+.liquid-skill img {
+    width: 48px;
+    height: 48px;
+    transition: all 0.4s ease;
+    filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.3));
+}
+.liquid-skill:hover svg,
+.liquid-skill:hover img {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(0 0 12px rgba(255, 107, 53, 0.5));
+}
+.liquid-skill span {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: #fff;
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+.liquid-skill:nth-child(odd) {
+    animation: float 6s ease-in-out infinite;
+}
+.liquid-skill:nth-child(even) {
+    animation: float 8s ease-in-out infinite;
+}
 .skill-group {
     will-change: transform;
 }
@@ -726,63 +793,7 @@ button {
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
 }
-.skill-group {
-    background: var(--bg-card);
-    border: 1px solid var(--border-chrome);
-    padding: 2.5rem;
-}
-.skill-title {
-    font-family: var(--font-mono);
-    font-size: 1.2rem;
-    color: #fff;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 1rem;
-}
-.skill-list {
-    list-style: none;
-}
-.skill-list li {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
-.skill-icon {
-    width: 20px;
-    height: 20px;
-    stroke-width: 2;
-    color: var(--accent-cyan);
-    flex-shrink: 0;
-    transition: all 0.3s ease;
-}
-.skill-list li:hover .skill-icon {
-    color: var(--accent-copper);
-    transform: scale(1.1);
-}
-.skill-list li > span {
-    white-space: nowrap;
-}
-.bar-bg {
-    flex: 1; 
-    max-width: 150px; 
-    height: 4px;
-    background: rgba(255,255,255,0.1);
-    position: relative;
-    border-radius: 2px;
-}
-.bar-fill {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    background: var(--accent-cyan);
-    border-radius: 2px;
-}
+
 .contact-box {
     background: var(--bg-card);
     border: 1px solid var(--border-chrome);
