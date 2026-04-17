@@ -349,6 +349,7 @@ button {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1.5rem;
     margin-top: 3rem;
+    position: relative;
 }
 .liquid-skill {
     position: relative;
@@ -363,6 +364,8 @@ button {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     backdrop-filter: blur(10px);
+    cursor: pointer;
+    transform-origin: center;
 }
 .liquid-skill::before {
     content: '';
@@ -376,11 +379,22 @@ button {
     opacity: 1;
 }
 .liquid-skill:hover {
-    transform: translateY(-8px);
+    transform: translateY(-12px) scale(1.05);
     border-color: var(--accent-cyan);
-    box-shadow: 0 10px 40px rgba(0, 240, 255, 0.2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+    box-shadow: 0 15px 50px rgba(0, 240, 255, 0.3);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+    z-index: 10;
 }
+.liquid-skill:nth-child(1) { transform: rotate(-8deg) translateY(25px) translateX(-15px); }
+.liquid-skill:nth-child(2) { transform: rotate(12deg) translateY(-30px) translateX(20px); }
+.liquid-skill:nth-child(3) { transform: rotate(-5deg) translateY(15px) translateX(-25px); }
+.liquid-skill:nth-child(4) { transform: rotate(15deg) translateY(-20px) translateX(30px); }
+.liquid-skill:nth-child(5) { transform: rotate(-12deg) translateY(35px) translateX(-10px); }
+.liquid-skill:nth-child(6) { transform: rotate(8deg) translateY(-25px) translateX(15px); }
+.liquid-skill:nth-child(7) { transform: rotate(-15deg) translateY(20px) translateX(-30px); }
+.liquid-skill:nth-child(8) { transform: rotate(10deg) translateY(-35px) translateX(25px); }
+.liquid-skill:nth-child(9) { transform: rotate(-10deg) translateY(30px) translateX(-20px); }
+.liquid-skill:nth-child(10) { transform: rotate(6deg) translateY(-15px) translateX(10px); }
 .liquid-skill svg,
 .liquid-skill img {
     width: 48px;

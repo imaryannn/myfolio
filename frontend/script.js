@@ -24,13 +24,13 @@
             console.log('✅ Lenis Smooth Scroll Enabled');
             let terminalActive = false;
             document.addEventListener('mouseenter', (e) => {
-                if (e.target.closest('.hero-right .terminal-body')) {
+                if (e.target && typeof e.target.closest === 'function' && e.target.closest('.hero-right .terminal-body')) {
                     terminalActive = true;
                     if (lenis) lenis.stop();
                 }
             }, true);
             document.addEventListener('mouseleave', (e) => {
-                if (e.target.closest('.hero-right .terminal-body')) {
+                if (e.target && typeof e.target.closest === 'function' && e.target.closest('.hero-right .terminal-body')) {
                     terminalActive = false;
                     if (lenis) lenis.start();
                 }
@@ -81,12 +81,13 @@
             }
         });
         document.addEventListener('click', (e) => {
-            if (!navToggle.contains(e.target) && !mobileNav.contains(e.target)) {
+            if (navToggle && mobileNav && !navToggle.contains(e.target) && !mobileNav.contains(e.target)) {
                 navToggle.classList.remove('active');
                 mobileNav.classList.remove('active');
             }
         });
     }
+    
     function initAnimations() {
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
             document.querySelectorAll('[data-reveal]').forEach(el => {
@@ -105,6 +106,13 @@
             });
             gsap.ticker.lagSmoothing(0);
         }
+        
+        // Store original rotations for skill boxes
+        document.querySelectorAll('.liquid-skill').forEach((box, i) => {
+            const rotations = [-2, 1, -1, 2, -1.5, 1.5, -0.5, 1.8, -2.2, 0.8];
+            box.dataset.originalRotation = rotations[i] || 0;
+        });
+        
         const reveals = gsap.utils.toArray('[data-reveal]');
         reveals.forEach(el => {
             const direction = el.getAttribute('data-reveal');
@@ -248,6 +256,49 @@
     }
     window.addEventListener('load', () => {
         setTimeout(initAnimations, 100);
+        
+        // Initialize repel effect after page loads
+        setTimeout(() => {
+            const skillBoxes = document.querySelectorAll('.liquid-skill');
+            console.log('Found skill boxes:', skillBoxes.length);
+            
+            if (skillBoxes.length > 0) {
+                // Test visual change first
+                skillBoxes[0].style.backgroundColor = 'red';
+                setTimeout(() => skillBoxes[0].style.backgroundColor = '', 1000);
+                
+                // Simple repel effect with aggressive override
+                document.addEventListener('mousemove', function(e) {
+                    skillBoxes.forEach(function(box, index) {
+                        const rect = box.getBoundingClientRect();
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
+                        
+                        const deltaX = e.clientX - centerX;
+                        const deltaY = e.clientY - centerY;
+                        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                        
+                        if (distance < 150) {
+                            const force = (150 - distance) / 150;
+                            const moveX = -deltaX * force * 1.0;
+                            const moveY = -deltaY * force * 1.0;
+                            
+                            if (index === 0) {
+                                console.log('Repelling:', moveX, moveY, distance);
+                            }
+                            
+                            box.style.setProperty('transform', `translate(${moveX}px, ${moveY}px)`, 'important');
+                            box.style.setProperty('transition', 'none', 'important');
+                        } else {
+                            box.style.setProperty('transform', 'translate(0px, 0px)', 'important');
+                            box.style.setProperty('transition', 'transform 0.3s ease', 'important');
+                        }
+                    });
+                });
+                
+                console.log('✅ Simple repel effect initialized');
+            }
+        }, 500);
     });
     const heroForm = document.getElementById('hero-terminal-form');
     const heroInput = document.getElementById('hero-term-input');
@@ -417,45 +468,49 @@ async function loadDynamicContent() {
         const projectsData = await projectsRes.json();
         if (projectsData.success && projectsData.projects) {
             const projectList = document.querySelector('.project-list');
-            projectList.innerHTML = projectsData.projects.map((p, i) => `
-                <article class="project-row">
-                    <div class="project-content">
-                        <span class="project-category">${p.category}</span>
-                        <h3 class="project-name">${p.name}</h3>
-                        <p class="project-snippet">${p.description}</p>
-                        <div class="project-tech">
-                            ${p.techStack.map(t => `<span>${t}</span>`).join('')}
+            if (projectList) {
+                projectList.innerHTML = projectsData.projects.map((p, i) => `
+                    <article class="project-row">
+                        <div class="project-content">
+                            <span class="project-category">${p.category}</span>
+                            <h3 class="project-name">${p.name}</h3>
+                            <p class="project-snippet">${p.description}</p>
+                            <div class="project-tech">
+                                ${p.techStack.map(t => `<span>${t}</span>`).join('')}
+                            </div>
+                            <a href="${p.link}" target="_blank" class="btn btn-outline">Access Module</a>
                         </div>
-                        <a href="${p.link}" target="_blank" class="btn btn-outline">Access Module</a>
-                    </div>
-                    <div class="project-media">
-                        <div class="terminal-wire">
-                            <div class="terminal-header"><span class="dot"></span><span class="dot"></span><span class="dot"></span> ${p.name.toUpperCase().replace(/ /g, '_')}.SYS</div>
-                            <div class="terminal-body">
-                                <span class="term-line">> loading ${p.name}...</span>
-                                <span class="term-line">> initializing modules...</span>
-                                <span class="term-line" style="color:var(--accent-cyan);">> system ready</span>
-                                <div class="term-loader"></div>
+                        <div class="project-media">
+                            <div class="terminal-wire">
+                                <div class="terminal-header"><span class="dot"></span><span class="dot"></span><span class="dot"></span> ${p.name.toUpperCase().replace(/ /g, '_')}.SYS</div>
+                                <div class="terminal-body">
+                                    <span class="term-line">> loading ${p.name}...</span>
+                                    <span class="term-line">> initializing modules...</span>
+                                    <span class="term-line" style="color:var(--accent-cyan);">> system ready</span>
+                                    <div class="term-loader"></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </article>
-            `).join('');
+                    </article>
+                `).join('');
+            }
         }
         const skillsRes = await fetch(`${API_BASE_URL}/api/skills`);
         const skillsData = await skillsRes.json();
         if (skillsData.success && skillsData.skills) {
             const skillsWrapper = document.querySelector('.skills-wrapper');
-            skillsWrapper.innerHTML = skillsData.skills.map((s, i) => `
-                <div class="skill-group animate-bars">
-                    <h3 class="skill-title">${s.category}</h3>
-                    <ul class="skill-list">
-                        ${s.items.map(item => `
-                            <li><span>${item.name}</span> <div class="bar-bg"><div class="bar-fill" style="width: ${item.level}%;"></div></div></li>
-                        `).join('')}
-                    </ul>
-                </div>
-            `).join('');
+            if (skillsWrapper) {
+                skillsWrapper.innerHTML = skillsData.skills.map((s, i) => `
+                    <div class="skill-group animate-bars">
+                        <h3 class="skill-title">${s.category}</h3>
+                        <ul class="skill-list">
+                            ${s.items.map(item => `
+                                <li><span>${item.name}</span> <div class="bar-bg"><div class="bar-fill" style="width: ${item.level}%;"></div></div></li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('');
+            }
         }
         const profileRes = await fetch(`${API_BASE_URL}/api/profile`);
         const profileData = await profileRes.json();
