@@ -69,6 +69,36 @@
             mobileNav.appendChild(clone);
         });
     }
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+        heroTitle.addEventListener('mousemove', (e) => {
+            const rect = heroTitle.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            heroTitle.style.setProperty('--hero-glow-x', `${Math.max(0, Math.min(100, x))}%`);
+            heroTitle.style.setProperty('--hero-glow-y', `${Math.max(0, Math.min(100, y))}%`);
+        });
+    }
+    const heroSubtitle = document.querySelector('.hero-gradient-subtitle');
+    if (heroSubtitle) {
+        heroSubtitle.addEventListener('mousemove', (e) => {
+            const rect = heroSubtitle.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            heroSubtitle.style.setProperty('--hero-glow-x', `${Math.max(0, Math.min(100, x))}%`);
+            heroSubtitle.style.setProperty('--hero-glow-y', `${Math.max(0, Math.min(100, y))}%`);
+        });
+    }
+    const heroDesc = document.querySelector('.hero-gradient-desc');
+    if (heroDesc) {
+        heroDesc.addEventListener('mousemove', (e) => {
+            const rect = heroDesc.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            heroDesc.style.setProperty('--hero-glow-x', `${Math.max(0, Math.min(100, x))}%`);
+            heroDesc.style.setProperty('--hero-glow-y', `${Math.max(0, Math.min(100, y))}%`);
+        });
+    }
     if (navToggle && mobileNav) {
         navToggle.addEventListener('click', () => {
             navToggle.classList.toggle('active');
@@ -240,17 +270,16 @@
     const heroInput = document.getElementById('hero-term-input');
     const heroBody = document.getElementById('hero-terminal-body');
     const bootLines = [
-        { text: 'ARYAN_CORE.EXE [Version 1.0.0]', color: '', delay: 0 },
-        { text: '(c) Aryan Corp. All rights reserved.', color: 'var(--text-muted)', delay: 600 },
+        { text: 'ARYAN_CORE [v1.0.0]', color: '', delay: 0 },
+        { text: '(c) Aryan Portfolio', color: 'var(--text-muted)', delay: 600 },
         { text: '', color: '', delay: 900 },
-        { text: '> Booting developer profile...', color: 'var(--accent-cyan)', delay: 1200 },
-        { text: '> Name:     Aryan', color: '', delay: 2000 },
-        { text: '> Role:     Full Stack Developer', color: '', delay: 2700 },
-        { text: '> Skills:   Node · Express · Socket.io · MongoDB', color: '', delay: 3500 },
-        { text: '> Frontend: HTML · CSS · JavaScript (ES6+)', color: '', delay: 4300 },
-        { text: '> Deployed: ZyroMeet · NodeChat · Prioramail · Syncyt', color: '', delay: 5100 },
+        { text: '> Loading profile...', color: 'var(--text-muted)', delay: 1200 },
+        { text: '> Name: Aryan', color: '', delay: 1900 },
+        { text: '> Focus: Full stack web systems', color: '', delay: 2600 },
+        { text: '> Stack: Node · React · MongoDB', color: '', delay: 3400 },
+        { text: '> Shipping: Projects, tools, and interfaces', color: '', delay: 4200 },
         { text: '', color: '', delay: 5900 },
-        { text: '> Status:   ONLINE & READY TO BUILD 🚀', color: '#27c93f', delay: 6300 },
+        { text: '> Status: ready to build', color: 'var(--text-muted)', delay: 6300 },
         { text: '', color: '', delay: 7000 },
         { text: 'Type "help" to interact...', color: 'var(--text-muted)', delay: 7500 },
     ];
@@ -459,10 +488,8 @@ async function loadDynamicContent() {
         if (profileData.success && profileData.profile) {
             const p = profileData.profile;
             if (p.hero) {
-                const heroTitle = document.querySelector('.hero-title');
                 const heroSubtitle = document.querySelector('.hero-subtitle');
                 const heroDesc = document.querySelector('.hero-desc');
-                if (heroTitle) heroTitle.textContent = p.hero.title || 'ARYAN';
                 if (heroSubtitle) heroSubtitle.textContent = '// ' + (p.hero.subtitle || 'Full Stack Developer');
                 if (heroDesc) heroDesc.textContent = p.hero.description || '';
             }
