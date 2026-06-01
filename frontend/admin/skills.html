@@ -31,9 +31,19 @@
 
             <div class="admin-content">
                 <div class="form-container">
-                    <h2 style="font-family: var(--font-mono); color: var(--accent-cyan); margin-bottom: 1.5rem;">EDIT_SKILLS</h2>
+                    <div style="display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: end; margin-bottom: 1.5rem;">
+                        <div>
+                            <h2 style="font-family: var(--font-mono); color: var(--accent-cyan); margin-bottom: 0.25rem;">SKILLS_STUDIO</h2>
+                            <p style="color: var(--text-muted); max-width: 52ch;">Edit categories and skills inline, or extract skill names from existing projects to seed the list faster.</p>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                            <button type="button" id="addCategoryBtn" class="btn btn-outline">+ Add Category</button>
+                            <button type="button" id="extractSkillsBtn" class="btn btn-outline">Extract From Projects</button>
+                            <button id="saveSkillsBtn" class="btn btn-primary">Save All Skills</button>
+                        </div>
+                    </div>
+                    <div id="skillsMeta" style="font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 1rem;"></div>
                     <div id="skillsEditor"></div>
-                    <button id="saveSkillsBtn" class="btn btn-primary" style="margin-top: 1.5rem;">Save All Skills</button>
                     <div id="skillsMsg" style="margin-top: 1rem; font-family: var(--font-mono);"></div>
                 </div>
             </div>
@@ -43,6 +53,27 @@
     <script src="admin.js"></script>
     <script>
         let skillsData = [];
+        let dirty = false;
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function markDirty() {
+            dirty = true;
+            updateMeta();
+        }
+
+        function updateMeta() {
+            const categoryCount = skillsData.length;
+            const skillCount = skillsData.reduce((sum, category) => sum + (category.items?.length || 0), 0);
+            document.getElementById('skillsMeta').textContent = `categories: ${categoryCount}  |  skills: ${skillCount}  |  status: ${dirty ? 'unsaved changes' : 'saved'}`;
+        }
         
         async function loadSkills() {
             try {
@@ -51,8 +82,11 @@
                 
                 skillsData = data.skills || [];
                 renderSkillsEditor();
+                dirty = false;
+                updateMeta();
             } catch (error) {
                 console.error('Error loading skills:', error);
+                document.getElementById('skillsEditor').innerHTML = '<p style="color: var(--accent-red);">Error loading skills</p>';
             }
         }
         
@@ -60,42 +94,57 @@
             const editor = document.getElementById('skillsEditor');
             
             if (skillsData.length === 0) {
-                editor.innerHTML = '<p style="color: var(--text-muted);">No skills yet. Add a category below.</p>';
+                editor.innerHTML = `
+                    <div style="border: 1px dashed rgba(255,255,255,0.18); border-radius: 16px; padding: 1.5rem; color: var(--text-muted); text-align: center;">
+                        No skills yet. Use <strong>Add Category</strong> to begin.
+                    </div>
+                `;
                 return;
             }
             
-            editor.innerHTML = skillsData.map((category, catIndex) => `
-                <div class="skill-category-editor" style="background: rgba(0,240,255,0.05); border: 1px solid var(--border-chrome); padding: 1.5rem; margin-bottom: 1.5rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <input type="text" value="${category.category}" onchange="updateCategory(${catIndex}, this.value)" style="background: rgba(0,0,0,0.5); border: 1px solid var(--accent-cyan); padding: 0.5rem 1rem; color: var(--accent-cyan); font-family: var(--font-mono); font-size: 1.1rem; font-weight: bold;">
-                        <button onclick="deleteCategory(${catIndex})" class="btn btn-outline btn-small" style="background: rgba(255,51,51,0.1); border-color: var(--accent-red); color: var(--accent-red);">Delete Category</button>
+            editor.innerHTML = `
+                <div style="border: 1px solid var(--border-chrome); border-radius: 16px; overflow: hidden;">
+                    <div style="display: grid; grid-template-columns: 1.4fr 1fr auto auto; gap: 1rem; padding: 0.9rem 1rem; background: rgba(255,255,255,0.03); color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em;">
+                        <div>Category / Skill</div>
+                        <div>Level</div>
+                        <div>Actions</div>
+                        <div></div>
                     </div>
-                    <div class="skills-items">
-                        ${category.items?.map((item, itemIndex) => `
-                            <div style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 1rem; margin-bottom: 0.75rem; align-items: center;">
-                                <input type="text" value="${item.name}" onchange="updateSkillName(${catIndex}, ${itemIndex}, this.value)" placeholder="Skill name" style="background: rgba(0,0,0,0.5); border: 1px solid var(--border-chrome); padding: 0.5rem; color: #fff; font-family: var(--font-mono);">
-                                <input type="number" value="${item.level}" min="0" max="100" onchange="updateSkillLevel(${catIndex}, ${itemIndex}, this.value)" placeholder="Level" style="background: rgba(0,0,0,0.5); border: 1px solid var(--border-chrome); padding: 0.5rem; color: #fff; font-family: var(--font-mono);">
-                                <button onclick="deleteSkill(${catIndex}, ${itemIndex})" style="background: none; border: none; color: var(--accent-red); cursor: pointer; font-size: 1.2rem;">✕</button>
+                    ${skillsData.map((category, catIndex) => `
+                        <div style="border-top: 1px solid rgba(255,255,255,0.08);">
+                            <div style="display: grid; grid-template-columns: 1.4fr 1fr auto auto; gap: 1rem; padding: 0.9rem 1rem; align-items: center; background: rgba(0,240,255,0.04);">
+                                <input type="text" value="${escapeHtml(category.category || '')}" oninput="updateCategory(${catIndex}, this.value)" style="width: 100%; background: rgba(0,0,0,0.35); border: 1px solid rgba(0,240,255,0.18); border-radius: 12px; padding: 0.65rem 0.85rem; color: #fff; font-family: var(--font-mono);">
+                                <div style="color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem;">${(category.items?.length || 0)} skills</div>
+                                <button onclick="addSkill(${catIndex})" class="btn btn-outline btn-small">+ Skill</button>
+                                <button onclick="deleteCategory(${catIndex})" class="btn btn-outline btn-small" style="background: rgba(255,51,51,0.1); border-color: var(--accent-red); color: var(--accent-red);">Delete</button>
                             </div>
-                        `).join('') || ''}
-                    </div>
-                    <button onclick="addSkill(${catIndex})" class="btn btn-outline btn-small" style="margin-top: 0.5rem;">+ Add Skill</button>
+                            ${(category.items || []).map((item, itemIndex) => `
+                                <div style="display: grid; grid-template-columns: 1.4fr 1fr auto auto; gap: 1rem; padding: 0.8rem 1rem; align-items: center; border-top: 1px solid rgba(255,255,255,0.06);">
+                                    <input type="text" value="${escapeHtml(item.name || '')}" oninput="updateSkillName(${catIndex}, ${itemIndex}, this.value)" placeholder="Skill name" style="width: 100%; background: rgba(0,0,0,0.35); border: 1px solid var(--border-chrome); border-radius: 12px; padding: 0.65rem 0.85rem; color: #fff; font-family: var(--font-mono);">
+                                    <input type="number" value="${Number.isFinite(item.level) ? item.level : 0}" min="0" max="100" oninput="updateSkillLevel(${catIndex}, ${itemIndex}, this.value)" placeholder="Level" style="width: 100%; background: rgba(0,0,0,0.35); border: 1px solid var(--border-chrome); border-radius: 12px; padding: 0.65rem 0.85rem; color: #fff; font-family: var(--font-mono);">
+                                    <div></div>
+                                    <button onclick="deleteSkill(${catIndex}, ${itemIndex})" class="btn btn-outline btn-small" style="background: rgba(255,51,51,0.1); border-color: var(--accent-red); color: var(--accent-red);">Remove</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `).join('')}
                 </div>
-            `).join('');
-            
-            editor.innerHTML += '<button onclick="addCategory()" class="btn btn-outline" style="width: 100%;">+ Add Category</button>';
+            `;
         }
         
         function updateCategory(catIndex, value) {
             skillsData[catIndex].category = value;
+            markDirty();
         }
         
         function updateSkillName(catIndex, itemIndex, value) {
             skillsData[catIndex].items[itemIndex].name = value;
+            markDirty();
         }
         
         function updateSkillLevel(catIndex, itemIndex, value) {
-            skillsData[catIndex].items[itemIndex].level = parseInt(value);
+            skillsData[catIndex].items[itemIndex].level = Math.max(0, Math.min(100, parseInt(value || '0', 10) || 0));
+            markDirty();
         }
         
         function addCategory() {
@@ -104,12 +153,113 @@
                 items: []
             });
             renderSkillsEditor();
+            markDirty();
+        }
+
+        function normalizeSkillName(value) {
+            return String(value || '')
+                .trim()
+                .replace(/\s+/g, ' ');
+        }
+
+        function inferSkillType(name) {
+            const value = String(name || '').toLowerCase();
+
+            if (/(html|css|javascript|typescript|react|vue|svelte|next|tailwind|bootstrap|frontend|ui|ux)/.test(value)) return 'Frontend';
+            if (/(node|express|api|rest|graphql|socket|websocket|server|backend|jwt|auth|oauth)/.test(value)) return 'Backend';
+            if (/(mongo|mongodb|sql|postgres|mysql|database|db|redis|prisma)/.test(value)) return 'Database';
+            if (/(docker|kubernetes|vercel|render|aws|gcp|azure|deploy|ci|cd|devops|git)/.test(value)) return 'DevOps';
+            if (/(webrtc|stream|video|audio|media|chat|realtime|real-time)/.test(value)) return 'Realtime';
+            if (/(test|jest|cypress|playwright|vitest|mocha|chai)/.test(value)) return 'Testing';
+            if (/(auth|oauth|jwt|security|encryption|secure)/.test(value)) return 'Auth';
+            return 'General';
+        }
+
+        function findCategoryIndexByType(typeName) {
+            const normalized = String(typeName || '').toLowerCase();
+            return skillsData.findIndex((category) => {
+                const categoryName = String(category.category || '').toLowerCase();
+                return categoryName === normalized || categoryName.includes(normalized) || normalized.includes(categoryName);
+            });
+        }
+
+        function findSkillIndex(category, skillName) {
+            const normalized = String(skillName || '').toLowerCase();
+            return (category.items || []).findIndex((item) => String(item.name || '').toLowerCase() === normalized);
+        }
+
+        function upsertSkillIntoType(typeName, skillName) {
+            const cleanSkillName = normalizeSkillName(skillName);
+            if (!cleanSkillName) return;
+
+            let categoryIndex = findCategoryIndexByType(typeName);
+            if (categoryIndex === -1) {
+                skillsData.push({ category: typeName, items: [] });
+                categoryIndex = skillsData.length - 1;
+            }
+
+            const category = skillsData[categoryIndex];
+            if (!Array.isArray(category.items)) {
+                category.items = [];
+            }
+
+            if (findSkillIndex(category, cleanSkillName) !== -1) return;
+            category.items.push({ name: cleanSkillName, level: 50 });
+        }
+
+        async function extractSkillsFromProjects() {
+            const btn = document.getElementById('extractSkillsBtn');
+            const msg = document.getElementById('skillsMsg');
+
+            try {
+                btn.disabled = true;
+                msg.textContent = 'Scanning projects for tech stack items...';
+                msg.style.color = 'var(--text-muted)';
+
+                const res = await fetch(`${API_BASE_URL}/api/projects`);
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.error || 'Failed to load projects');
+                }
+
+                const projects = Array.isArray(data.projects) ? data.projects : [];
+                let extractedCount = 0;
+
+                projects.forEach((project) => {
+                    (project.techStack || []).forEach((tech) => {
+                        const cleanSkillName = normalizeSkillName(tech);
+                        if (!cleanSkillName) return;
+                        const typeName = inferSkillType(cleanSkillName);
+                        const beforeCount = skillsData.reduce((sum, category) => sum + (category.items || []).length, 0);
+                        upsertSkillIntoType(typeName, cleanSkillName);
+                        const afterCount = skillsData.reduce((sum, category) => sum + (category.items || []).length, 0);
+                        if (afterCount > beforeCount) extractedCount += 1;
+                    });
+                });
+
+                if (!extractedCount) {
+                    msg.textContent = 'No tech stack items found in projects.';
+                    msg.style.color = 'var(--accent-red)';
+                    return;
+                }
+
+                renderSkillsEditor();
+                markDirty();
+                msg.textContent = `✓ Added ${extractedCount} skills from projects into matching types.`;
+                msg.style.color = '#27c93f';
+            } catch (error) {
+                msg.textContent = `✗ ${error.message || 'Failed to extract skills'}`;
+                msg.style.color = 'var(--accent-red)';
+            } finally {
+                btn.disabled = false;
+            }
         }
         
         function deleteCategory(catIndex) {
             if (!confirm('Delete this category?')) return;
             skillsData.splice(catIndex, 1);
             renderSkillsEditor();
+            markDirty();
         }
         
         function addSkill(catIndex) {
@@ -118,11 +268,13 @@
             }
             skillsData[catIndex].items.push({ name: 'New Skill', level: 50 });
             renderSkillsEditor();
+            markDirty();
         }
         
         function deleteSkill(catIndex, itemIndex) {
             skillsData[catIndex].items.splice(itemIndex, 1);
             renderSkillsEditor();
+            markDirty();
         }
         
         document.getElementById('saveSkillsBtn').addEventListener('click', async () => {
@@ -140,13 +292,24 @@
                 if (res.ok) {
                     document.getElementById('skillsMsg').textContent = '✓ Skills saved successfully!';
                     document.getElementById('skillsMsg').style.color = '#27c93f';
+                    dirty = false;
+                    updateMeta();
                 } else {
-                    throw new Error('Failed');
+                    const data = await res.json().catch(() => ({}));
+                    throw new Error(data.error || 'Failed');
                 }
             } catch (error) {
-                document.getElementById('skillsMsg').textContent = '✗ Error saving skills';
+                document.getElementById('skillsMsg').textContent = `✗ ${error.message || 'Error saving skills'}`;
                 document.getElementById('skillsMsg').style.color = 'var(--accent-red)';
             }
+        });
+
+        document.getElementById('addCategoryBtn').addEventListener('click', () => {
+            addCategory();
+        });
+
+        document.getElementById('extractSkillsBtn').addEventListener('click', () => {
+            extractSkillsFromProjects();
         });
 
         loadSkills();

@@ -1,0 +1,9 @@
+{
+  "name": "myfolio-frontend",
+  "version": "1.0.0",
+  "description": "Aryan's Portfolio Frontend",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  }
+}

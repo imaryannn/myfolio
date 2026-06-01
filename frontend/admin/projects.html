@@ -32,6 +32,23 @@
             <div class="admin-content">
                 <div class="form-container">
                     <h2 style="font-family: var(--font-mono); color: var(--accent-cyan); margin-bottom: 1.5rem;" id="formTitle">ADD_PROJECT</h2>
+                    <div class="form-field" style="margin-bottom: 1.5rem;">
+                        <label>AI Prompt:</label>
+                        <textarea id="aiPrompt" placeholder="Describe the project in plain English and let Gemini draft the fields..." style="min-height: 110px;"></textarea>
+                        <div style="display: flex; gap: 1rem; margin-top: 0.75rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-outline" id="generateBtn">Generate Draft</button>
+                            <button type="button" class="btn btn-outline" id="usePromptBtn">Fill From Prompt</button>
+                        </div>
+                        <div id="aiMsg" style="margin-top: 0.75rem; font-family: var(--font-mono);"></div>
+                    </div>
+                    <div class="form-field" id="draftPanel" style="margin-bottom: 1.5rem; display: none;">
+                        <label>Draft Review:</label>
+                        <div id="draftPreview" style="border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 1rem; background: rgba(255,255,255,0.03); font-family: var(--font-mono);"></div>
+                        <div style="display: flex; gap: 1rem; margin-top: 0.75rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-primary" id="approveDraftBtn" disabled>Approve & Fill</button>
+                            <button type="button" class="btn btn-outline" id="clearDraftBtn">Reject Draft</button>
+                        </div>
+                    </div>
                     <form id="projectForm">
                         <input type="hidden" id="projectId" name="id">
                         <div class="form-row">
@@ -75,6 +92,7 @@
     <script src="admin.js"></script>
     <script>
         let editMode = false;
+        let latestDraft = null;
         
         
         document.getElementById('cancelBtn').addEventListener('click', () => {
@@ -89,10 +107,63 @@
             document.getElementById('submitBtn').textContent = 'Create Project';
             document.getElementById('cancelBtn').style.display = 'none';
             document.getElementById('formMsg').textContent = '';
+            clearDraft();
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderDraft(draft) {
+            latestDraft = draft;
+            document.getElementById('draftPanel').style.display = 'block';
+            document.getElementById('approveDraftBtn').disabled = false;
+            document.getElementById('draftPreview').innerHTML = `
+                <div style="display: grid; gap: 0.75rem;">
+                    <div><span style="color: var(--accent-cyan);">name:</span> ${escapeHtml(draft.name || '<empty>')}</div>
+                    <div><span style="color: var(--accent-cyan);">category:</span> ${escapeHtml(draft.category || 'Protocol: App')}</div>
+                    <div><span style="color: var(--accent-cyan);">description:</span> ${escapeHtml(draft.description || '<empty>')}</div>
+                    <div><span style="color: var(--accent-cyan);">techStack:</span> ${escapeHtml((draft.techStack || []).join(', ') || '<empty>')}</div>
+                    <div><span style="color: var(--accent-cyan);">link:</span> ${escapeHtml(draft.link || '<empty>')}</div>
+                    <div><span style="color: var(--accent-cyan);">order:</span> ${escapeHtml(Number.isFinite(draft.order) ? draft.order : 0)}</div>
+                </div>
+            `;
+            document.getElementById('aiMsg').textContent = '✓ Draft ready. Review it, then approve to fill the form.';
+            document.getElementById('aiMsg').style.color = '#27c93f';
+            if (!editMode) {
+                document.getElementById('formTitle').textContent = 'REVIEW_DRAFT';
+                document.getElementById('submitBtn').textContent = 'Create Project';
+            }
+        }
+
+        function fillFormFromDraft() {
+            if (!latestDraft) return;
+            document.getElementById('projectName').value = latestDraft.name || '';
+            document.getElementById('projectCategory').value = latestDraft.category || 'Protocol: App';
+            document.getElementById('projectDescription').value = latestDraft.description || '';
+            document.getElementById('projectTech').value = (latestDraft.techStack || []).join(', ');
+            document.getElementById('projectUrl').value = latestDraft.link || '';
+            document.getElementById('aiMsg').textContent = '✓ Draft approved and copied into the form. Save when ready.';
+            document.getElementById('aiMsg').style.color = '#27c93f';
+            document.getElementById('draftPanel').style.display = 'none';
+            document.getElementById('approveDraftBtn').disabled = true;
+        }
+
+        function clearDraft() {
+            latestDraft = null;
+            document.getElementById('draftPanel').style.display = 'none';
+            document.getElementById('draftPreview').innerHTML = '';
+            document.getElementById('approveDraftBtn').disabled = true;
         }
         
         function editProject(id, name, category, description, tech, url) {
             editMode = true;
+            clearDraft();
             document.getElementById('projectId').value = id;
             document.getElementById('projectName').value = name;
             document.getElementById('projectCategory').value = category;
@@ -104,6 +175,71 @@
             document.getElementById('cancelBtn').style.display = 'inline-block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const prompt = document.getElementById('aiPrompt').value.trim();
+            const aiMsg = document.getElementById('aiMsg');
+
+            if (!prompt) {
+                aiMsg.textContent = 'Enter a project description first.';
+                aiMsg.style.color = 'var(--accent-red)';
+                return;
+            }
+
+            aiMsg.textContent = 'Generating draft...';
+            aiMsg.style.color = 'var(--text-muted)';
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('usePromptBtn').disabled = true;
+
+            try {
+                const token = localStorage.getItem('adminToken');
+                const res = await fetch(`${API_BASE_URL}/api/ai/project-draft`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.error || 'Failed to generate draft');
+                }
+
+                renderDraft(data.draft);
+            } catch (error) {
+                aiMsg.textContent = `✗ ${error.message}`;
+                aiMsg.style.color = 'var(--accent-red)';
+            } finally {
+                document.getElementById('generateBtn').disabled = false;
+                document.getElementById('usePromptBtn').disabled = false;
+            }
+        });
+
+        document.getElementById('usePromptBtn').addEventListener('click', () => {
+            const prompt = document.getElementById('aiPrompt').value.trim();
+            if (!prompt) return;
+
+            document.getElementById('projectName').value = prompt;
+            document.getElementById('projectCategory').value = 'Protocol: App';
+            document.getElementById('projectDescription').value = prompt;
+            document.getElementById('projectTech').value = '';
+            document.getElementById('projectUrl').value = '';
+            document.getElementById('aiMsg').textContent = '✓ Prompt copied into the form exactly as written.';
+            document.getElementById('aiMsg').style.color = '#27c93f';
+            clearDraft();
+        });
+
+        document.getElementById('approveDraftBtn').addEventListener('click', () => {
+            fillFormFromDraft();
+        });
+
+        document.getElementById('clearDraftBtn').addEventListener('click', () => {
+            clearDraft();
+            document.getElementById('aiMsg').textContent = 'Draft rejected. Generate a new one or fill manually.';
+            document.getElementById('aiMsg').style.color = 'var(--text-muted)';
+        });
         
         
         document.getElementById('projectForm').addEventListener('submit', async (e) => {

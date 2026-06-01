@@ -167,11 +167,13 @@
             });
         }
         gsap.utils.toArray('.section-heading').forEach(el => {
+            const section = el.closest('section');
+            if (section && section.id === 'contact') return;
             gsap.to(el, {
                 yPercent: isDesktop ? -25 : -5,
                 ease: 'none',
                 scrollTrigger: {
-                    trigger: el.closest('section'),
+                    trigger: section,
                     start: 'top bottom',
                     end: 'bottom top',
                     scrub: isDesktop ? 2 : 0.5
@@ -179,11 +181,13 @@
             });
         });
         gsap.utils.toArray('.section-label').forEach(el => {
+            const section = el.closest('section');
+            if (section && section.id === 'contact') return;
             gsap.to(el, {
                 yPercent: isDesktop ? -40 : -8,
                 ease: 'none',
                 scrollTrigger: {
-                    trigger: el.closest('section'),
+                    trigger: section,
                     start: 'top bottom',
                     end: 'bottom top',
                     scrub: isDesktop ? 1.5 : 0.5
@@ -218,17 +222,6 @@
                 }
             });
         });
-        gsap.to('.contact-box', {
-            yPercent: isDesktop ? -20 : -5,
-            scale: isDesktop ? 1.02 : 1,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: '.contact',
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: isDesktop ? 1.5 : 0.5
-            }
-        });
         gsap.utils.toArray('.bar::after').forEach(bar => {
         });
         const skillGroups = gsap.utils.toArray('.skill-group');
@@ -239,66 +232,9 @@
                 onEnter: () => group.classList.add('animate-bars')
             });
         });
-        const style = document.createElement('style');
-        style.textContent = `
-            .skill-group.animate-bars .bar-fill {
-                animation: fillBar 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            }
-            @keyframes fillBar {
-                from { clip-path: inset(0 100% 0 0); }
-                to { clip-path: inset(0 0 0 0); }
-            }
-            .bar-fill {
-                clip-path: inset(0 100% 0 0); /* Start hidden */
-            }
-        `;
-        document.head.appendChild(style);
     }
     window.addEventListener('load', () => {
         setTimeout(initAnimations, 100);
-        
-        // Initialize repel effect after page loads
-        setTimeout(() => {
-            const skillBoxes = document.querySelectorAll('.liquid-skill');
-            console.log('Found skill boxes:', skillBoxes.length);
-            
-            if (skillBoxes.length > 0) {
-                // Test visual change first
-                skillBoxes[0].style.backgroundColor = 'red';
-                setTimeout(() => skillBoxes[0].style.backgroundColor = '', 1000);
-                
-                // Simple repel effect with aggressive override
-                document.addEventListener('mousemove', function(e) {
-                    skillBoxes.forEach(function(box, index) {
-                        const rect = box.getBoundingClientRect();
-                        const centerX = rect.left + rect.width / 2;
-                        const centerY = rect.top + rect.height / 2;
-                        
-                        const deltaX = e.clientX - centerX;
-                        const deltaY = e.clientY - centerY;
-                        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                        
-                        if (distance < 150) {
-                            const force = (150 - distance) / 150;
-                            const moveX = -deltaX * force * 1.0;
-                            const moveY = -deltaY * force * 1.0;
-                            
-                            if (index === 0) {
-                                console.log('Repelling:', moveX, moveY, distance);
-                            }
-                            
-                            box.style.setProperty('transform', `translate(${moveX}px, ${moveY}px)`, 'important');
-                            box.style.setProperty('transition', 'none', 'important');
-                        } else {
-                            box.style.setProperty('transform', 'translate(0px, 0px)', 'important');
-                            box.style.setProperty('transition', 'transform 0.3s ease', 'important');
-                        }
-                    });
-                });
-                
-                console.log('✅ Simple repel effect initialized');
-            }
-        }, 500);
     });
     const heroForm = document.getElementById('hero-terminal-form');
     const heroInput = document.getElementById('hero-term-input');
@@ -498,18 +434,24 @@ async function loadDynamicContent() {
         const skillsRes = await fetch(`${API_BASE_URL}/api/skills`);
         const skillsData = await skillsRes.json();
         if (skillsData.success && skillsData.skills) {
-            const skillsWrapper = document.querySelector('.skills-wrapper');
+            const skillsWrapper = document.querySelector('#skillsWrapper');
             if (skillsWrapper) {
-                skillsWrapper.innerHTML = skillsData.skills.map((s, i) => `
-                    <div class="skill-group animate-bars">
-                        <h3 class="skill-title">${s.category}</h3>
-                        <ul class="skill-list">
-                            ${s.items.map(item => `
-                                <li><span>${item.name}</span> <div class="bar-bg"><div class="bar-fill" style="width: ${item.level}%;"></div></div></li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                `).join('');
+                const groups = skillsData.skills.filter(s => s.items && s.items.length);
+                skillsWrapper.innerHTML = groups.length
+                    ? groups.map((s) => `
+                        <div class="skill-group animate-bars">
+                            <div class="skill-group-head">
+                                <div class="skill-group-tag">/registry/${String(s.category || 'group').toLowerCase().replace(/[^a-z0-9]+/g, '-')}</div>
+                                <h3 class="skill-title">${s.category}</h3>
+                            </div>
+                            <div class="skill-badges">
+                                ${s.items.map(item => `
+                                    <span class="skill-badge">${item.name}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')
+                    : '<div class="skills-loading">No skills available yet.</div>';
             }
         }
         const profileRes = await fetch(`${API_BASE_URL}/api/profile`);
